@@ -43,11 +43,12 @@ act -W .github/workflows/unit-tests.yml --job verify_unit_tests
 4. Validate metadata (confirm long description renders).
 
    ```bash
-   python3 -m twine check dist/*
+   twine check dist/*
    ```
 
 5. Upload to PyPI. Twine will prompt for a password. Use your PyPI API token.
 
    ```bash
-   python3 -m twine upload dist/*
+   twine upload dist/*
    ```
+
