@@ -1,0 +1,15 @@
+{
+  // Python
+  "python.analysis.typeCheckingMode": "standard",
+  "python.testing.pytestEnabled": true,
+  "python.testing.unittestEnabled": false,
+  "python.testing.pytestArgs": [
+    "tests"
+  ],
+
+  // VS Code
+  "files.exclude": {
+    "*.pytest_cache": true,
+    "*.egg-info": true,
+  }
+}
