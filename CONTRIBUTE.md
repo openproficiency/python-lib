@@ -1,4 +1,12 @@
-## Verifying tests and coverage
+## How to Contribute
+
+1. Review the [python library issues]() for tasks for this implementation.
+1. Review the [openproficiency model issues](https://github.com/openproficiency/model/issues) for broader tasks.
+1. Fork this repository and make your changes.
+   > ❗️**Important:** They must be in alignment with the open [proficiency model](https://github.com/openproficiency/model)
+1. Start the project in a Codespace or local development container.
+1. Verify all unit tests pass.
+1. Create a pull request.
 
 ## Run Tests workflow
 
