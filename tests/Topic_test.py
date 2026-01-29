@@ -27,17 +27,24 @@ class TestTopic:
         # Arrange
         id = "git-commit"
         description = "Saving changes to the Git history"
+        subtopics = ["git-branch", "git-merge"]
+        pretopics = ["cli"]
 
         # Act
         topic = Topic(
-            id=id, 
-            description=description
+            id=id,
+            description=description,
+            subtopics=subtopics,
+            pretopics=pretopics
         )
 
         # Assert
         assert topic.description == description
+        assert len(topic.subtopics) == 2
+        assert len(topic.pretopics) == 1
 
     # Methods
+
     def test_add_subtopic_string(self):
         """Test adding a subtopic as a string."""
 
@@ -67,6 +74,25 @@ class TestTopic:
         # Assert
         assert subtopic.id in topic.subtopics
 
+    def test_add_subtopics_mixed(self):
+        """Test adding multiple subtopics as a mix of strings and Topic instances."""
+
+        # Arrange
+        topic = Topic(id="git")
+        subtopic1 = "git-commit"
+        subtopic2 = Topic(
+            id="git-branch",
+            description="Managing branches in Git"
+        )
+        subtopics = [subtopic1, subtopic2]
+
+        # Act
+        topic.add_subtopics(subtopics)
+
+        # Assert
+        assert subtopic1 in topic.subtopics
+        assert subtopic2.id in topic.subtopics
+
     def test_add_pretopic_string(self):
         """Test adding a pretopic as a string."""
 
@@ -95,6 +121,25 @@ class TestTopic:
 
         # Assert
         assert pretopic.id in topic.pretopics
+
+    def test_add_pretopics_mixed(self):
+        """Test adding multiple pretopics as a mix of strings and Topic instances."""
+
+        # Arrange
+        topic = Topic(id="git")
+        pretopic1 = "version-control"
+        pretopic2 = Topic(
+            id="software-development",
+            description="The process of creating software"
+        )
+        pretopics = [pretopic1, pretopic2]
+
+        # Act
+        topic.add_pretopics(pretopics)
+
+        # Assert
+        assert pretopic1 in topic.pretopics
+        assert pretopic2.id in topic.pretopics
 
     # Debugging
     def test_topic_repr(self):
