@@ -7,7 +7,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="openproficiency",
-    version="0.1.0",
+    version="0.0.2",
     author="OpenProficiency Contributors",
     description="A library for managing proficiency topics and topic lists",
     long_description=long_description,
