@@ -3,3 +3,4 @@
 from .Topic import Topic
 from .TopicList import TopicList
 from .ProficiencyScore import ProficiencyScore, ProficiencyScoreName
+from .TranscriptEntry import TranscriptEntry
