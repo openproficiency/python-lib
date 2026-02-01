@@ -141,6 +141,27 @@ class TestTopic:
         assert pretopic1 in topic.pretopics
         assert pretopic2.id in topic.pretopics
 
+    def test_to_json(self):
+        """Test converting a Topic to JSON."""
+
+        # Arrange
+        topic = Topic(
+            id="git-merge",
+            description="Combining branches in Git",
+            subtopics=["git-branch", "git-commit"],
+            pretopics=["cli"]
+        )
+
+        # Act
+        topic_json = topic.to_json()
+
+        # Assert
+        assert topic_json["id"] == "git-merge"
+        assert topic_json["description"] == "Combining branches in Git"
+        assert "git-branch" in topic_json["subtopics"]
+        assert "git-commit" in topic_json["subtopics"]
+        assert "cli" in topic_json["pretopics"]
+
     # Debugging
     def test_topic_repr(self):
         """Check string representation of a Topic"""

@@ -77,6 +77,15 @@ class Topic:
         for pretopic in pretopics:
             self.add_pretopic(pretopic)
 
+    def to_json(self) -> dict:
+        """Convert Topic to JSON-serializable dictionary."""
+        return {
+            "id": self.id,
+            "description": self.description,
+            "subtopics": self.subtopics,
+            "pretopics": self.pretopics
+        }
+
     # Debugging
     def __repr__(self) -> str:
         """String representation of Topic."""
