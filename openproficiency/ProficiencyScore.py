@@ -1,5 +1,6 @@
 """ProficiencyScore module for OpenProficiency library."""
 
+import json
 from enum import Enum
 from typing import Union
 
@@ -84,12 +85,16 @@ class ProficiencyScore:
         else:
             raise ValueError(f"Invalid score value: {score}")
 
-    def to_json(self) -> dict:
+    def to_dict(self) -> dict:
         """Convert to a JSON-serializable dictionary."""
         return {
             "topic_id": self.topic_id,
             "score": self._score
         }
+
+    def to_json(self) -> str:
+        """Convert to a JSON string."""
+        return json.dumps(self.to_dict())
 
     # Debugging
 

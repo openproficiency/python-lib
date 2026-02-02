@@ -183,8 +183,7 @@ class TestProficiencyScore:
             assert "ProficiencyScoreName enum" in str(e)
 
     # Methods
-
-    def test_to_json(self):
+    def test_to_dict(self):
         """Test conversion to JSON-serializable dictionary."""
 
         # Arrange
@@ -193,13 +192,28 @@ class TestProficiencyScore:
         ps = ProficiencyScore(topic_id=topic_id, score=score)
 
         # Act
-        json_dict = ps.to_json()
+        json_dict = ps.to_dict()
 
         # Assert
         assert json_dict == {
             "topic_id": topic_id,
             "score": score
         }
+
+    def test_to_json(self):
+        """Test conversion to JSON string."""
+
+        # Arrange
+        topic_id = "git-commit"
+        score = 0.8
+        ps = ProficiencyScore(topic_id=topic_id, score=score)
+
+        # Act
+        json_str = ps.to_json()
+
+        # Assert
+        expected_json = '{"topic_id": "git-commit", "score": 0.8}'
+        assert json_str == expected_json
 
     # Debugging
     def test_repr(self):

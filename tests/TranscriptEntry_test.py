@@ -96,6 +96,54 @@ class TestTranscriptEntry:
         assert topic_id == "git-commit"
         assert score == 0.8
 
+    # Methods
+    def test_to_dict(self):
+        """Test conversion of TranscriptEntry to dictionary."""
+
+        # Arrange
+        entry = TranscriptEntry(
+            user_id="user-123",
+            topic_id="git-commit",
+            score=0.8,
+            issuer="github-learn",
+            timestamp=datetime(2024, 1, 15, 10, 30, 0)
+        )
+
+        # Act
+        entry_dict = entry.to_dict()
+
+        # Assert
+        assert entry_dict == {
+            "user_id": "user-123",
+            "topic_id": "git-commit",
+            "score": 0.8,
+            "issuer": "github-learn",
+            "timestamp": "2024-01-15T10:30:00"
+        }
+
+    def test_to_json(self):
+        """Test conversion of TranscriptEntry to JSON string."""
+
+        # Arrange
+        entry = TranscriptEntry(
+            user_id="user-123",
+            topic_id="git-commit",
+            score=0.8,
+            issuer="github-learn",
+            timestamp=datetime(2024, 1, 15, 10, 30, 0)
+        )
+
+        # Act
+        json_str = entry.to_json()
+
+        # Assert
+        expected_json = (
+            '{"user_id": "user-123", "topic_id": "git-commit", '
+            '"score": 0.8, "issuer": "github-learn", '
+            '"timestamp": "2024-01-15T10:30:00"}'
+        )
+        assert json_str == expected_json
+
     # Debugging
     def test_repr(self):
         """Test string representation of TranscriptEntry."""

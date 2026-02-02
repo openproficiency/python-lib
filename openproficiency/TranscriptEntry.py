@@ -1,5 +1,6 @@
 """TranscriptEntry module for OpenProficiency library."""
 
+import json
 from datetime import datetime
 from typing import Optional
 from .ProficiencyScore import ProficiencyScore
@@ -38,7 +39,7 @@ class TranscriptEntry:
         return self._proficiency_score
 
     # Methods
-    def to_json(self) -> dict:
+    def to_dict(self) -> dict:
         """Convert Topic to JSON-serializable dictionary."""
         return {
             "user_id": self.user_id,
@@ -47,6 +48,10 @@ class TranscriptEntry:
             "issuer": self.issuer,
             "timestamp": self.timestamp.isoformat()
         }
+
+    def to_json(self) -> str:
+        """Convert Topic to JSON string."""
+        return json.dumps(self.to_dict())
 
     # Debugging
     def __repr__(self) -> str:

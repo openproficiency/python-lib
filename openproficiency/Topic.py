@@ -1,5 +1,6 @@
 """Topic module for OpenProficiency library."""
 
+import json
 from typing import List, Union
 
 
@@ -77,7 +78,7 @@ class Topic:
         for pretopic in pretopics:
             self.add_pretopic(pretopic)
 
-    def to_json(self) -> dict:
+    def to_dict(self) -> dict:
         """Convert Topic to JSON-serializable dictionary."""
         return {
             "id": self.id,
@@ -85,6 +86,10 @@ class Topic:
             "subtopics": self.subtopics,
             "pretopics": self.pretopics
         }
+
+    def to_json(self) -> str:
+        """Convert Topic to JSON string."""
+        return json.dumps(self.to_dict())
 
     # Debugging
     def __repr__(self) -> str:
