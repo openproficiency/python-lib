@@ -1,7 +1,7 @@
 """Tests for the TranscriptEntry class."""
 
 from datetime import datetime
-from openproficiency import TranscriptEntry, ProficiencyScore, ProficiencyScoreName
+from openproficiency import TranscriptEntry
 
 
 class TestTranscriptEntry:
@@ -21,13 +21,13 @@ class TestTranscriptEntry:
             user_id=user_id,
             topic_id=topic_id,
             score=score,
-            issuer=issuer
+            issuer=issuer,
         )
 
         # Assert
         assert entry.user_id == user_id
-        assert entry._proficiency_score.topic_id == topic_id
-        assert entry._proficiency_score.score == score
+        assert entry.proficiency_score.topic_id == topic_id
+        assert entry.proficiency_score.score == score
         assert entry.issuer == issuer
         assert entry.timestamp is not None
 
@@ -47,7 +47,7 @@ class TestTranscriptEntry:
             topic_id=topic_id,
             score=score,
             issuer=issuer,
-            timestamp=timestamp
+            timestamp=timestamp,
         )
 
         # Assert
@@ -68,7 +68,7 @@ class TestTranscriptEntry:
             user_id=user_id,
             topic_id=topic_id,
             score=score,
-            issuer=issuer
+            issuer=issuer,
         )
         after = datetime.now()
 
@@ -85,7 +85,7 @@ class TestTranscriptEntry:
             user_id="user-123",
             topic_id="git-commit",
             score=0.8,
-            issuer="github-learn"
+            issuer="github-learn",
         )
 
         # Act
@@ -106,7 +106,7 @@ class TestTranscriptEntry:
             topic_id="git-commit",
             score=0.8,
             issuer="github-learn",
-            timestamp=datetime(2024, 1, 15, 10, 30, 0)
+            timestamp=datetime(2024, 1, 15, 10, 30, 0),
         )
 
         # Act
@@ -118,7 +118,7 @@ class TestTranscriptEntry:
             "topic_id": "git-commit",
             "score": 0.8,
             "issuer": "github-learn",
-            "timestamp": "2024-01-15T10:30:00"
+            "timestamp": "2024-01-15T10:30:00",
         }
 
     def test_to_json(self):
@@ -130,7 +130,7 @@ class TestTranscriptEntry:
             topic_id="git-commit",
             score=0.8,
             issuer="github-learn",
-            timestamp=datetime(2024, 1, 15, 10, 30, 0)
+            timestamp=datetime(2024, 1, 15, 10, 30, 0),
         )
 
         # Act
@@ -153,7 +153,7 @@ class TestTranscriptEntry:
             user_id="user-123",
             topic_id="git-commit",
             score=0.8,
-            issuer="github-learn"
+            issuer="github-learn",
         )
 
         # Act

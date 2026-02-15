@@ -2,7 +2,7 @@
 
 import json
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Union
 from .ProficiencyScore import ProficiencyScore
 
 
@@ -17,7 +17,6 @@ class TranscriptEntry:
         topic_id: str,
         score: float,
         issuer: str,
-
         # Optional
         timestamp: Optional[datetime] = None,
     ):
@@ -25,7 +24,7 @@ class TranscriptEntry:
         self.user_id = user_id
         self._proficiency_score = ProficiencyScore(
             topic_id=topic_id,
-            score=score
+            score=score,
         )
         self.issuer = issuer
 
@@ -39,21 +38,43 @@ class TranscriptEntry:
         return self._proficiency_score
 
     # Methods
-    def to_dict(self) -> dict:
-        """Convert Topic to JSON-serializable dictionary."""
+    def to_dict(self) -> dict[str, Union[str, int, float]]:
+        """Convert TranscriptEntry to JSON-serializable dictionary."""
         return {
             "user_id": self.user_id,
             "topic_id": self._proficiency_score.topic_id,
             "score": self._proficiency_score.score,
             "issuer": self.issuer,
-            "timestamp": self.timestamp.isoformat()
+            "timestamp": self.timestamp.isoformat(),
         }
 
     def to_json(self) -> str:
-        """Convert Topic to JSON string."""
+        """Convert TranscriptEntry to JSON string."""
         return json.dumps(self.to_dict())
+
+    # Methods - Class
+    @classmethod
+    def from_dict(cls, data: dict[str, Union[str, int, float]]) -> "TranscriptEntry":
+        """Create a TranscriptEntry from a dictionary."""
+        return cls(
+            user_id=data["user_id"],
+            topic_id=data["topic_id"],
+            score=data["score"],
+            issuer=data["issuer"],
+            timestamp=datetime.fromisoformat(data["timestamp"]),
+        )
+
+    @classmethod
+    def from_json(cls, json_str: str) -> "TranscriptEntry":
+        """Create a TranscriptEntry from a JSON string."""
+        return cls.from_dict(json.loads(json_str))
 
     # Debugging
     def __repr__(self) -> str:
         """String representation of TranscriptEntry."""
-        return f"TranscriptEntry(user_id='{self.user_id}', topic_id='{self._proficiency_score.topic_id}', score={self._proficiency_score.score}, issuer='{self.issuer}')"
+        return (
+            f"TranscriptEntry(user_id='{self.user_id}', "
+            f"topic_id='{self._proficiency_score.topic_id}', "
+            f"score={self._proficiency_score.score}, "
+            f"issuer='{self.issuer}'"
+        )
