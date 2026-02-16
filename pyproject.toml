@@ -31,5 +31,13 @@ Documentation = "https://github.com/openproficiency/model"
 Repository = "https://github.com/openproficiency/python-sdk.git"
 Issues = "https://github.com/openproficiency/python-sdk/issues"
 
+[tool.black]
+line-length = 120
+target-version = ["py310"]
+
+[tool.autopep8]
+max_line_length = 120
+aggressive = 1
+
 [tool.setuptools]
 packages = ["openproficiency"]
