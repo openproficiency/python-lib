@@ -36,7 +36,7 @@ class TestTopic:
             id=id,
             description=description,
             subtopics=subtopics,
-            pretopics=pretopics
+            pretopics=pretopics,
         )
 
         # Assert
@@ -66,7 +66,7 @@ class TestTopic:
         topic = Topic(id="git")
         subtopic = Topic(
             id="git-commit",
-            description="Saving changes to the Git history"
+            description="Saving changes to the Git history",
         )
 
         # Act
@@ -75,16 +75,31 @@ class TestTopic:
         # Assert
         assert subtopic.id in topic.subtopics
 
+    def test_add_subtopic_invalid_type(self):
+        """Test that adding a subtopic with invalid type raises ValueError."""
+
+        # Arrange
+        topic = Topic(id="git")
+
+        # Act
+        result = None
+        try:
+            topic.add_subtopic(123)
+        except Exception as e:
+            result = e
+
+        # Assert
+        assert isinstance(result, ValueError)
+        assert "string" in str(result)
+        assert "dictionary" in str(result)
+
     def test_add_subtopics_mixed(self):
         """Test adding multiple subtopics as a mix of strings and Topic instances."""
 
         # Arrange
         topic = Topic(id="git")
         subtopic1 = "git-commit"
-        subtopic2 = Topic(
-            id="git-branch",
-            description="Managing branches in Git"
-        )
+        subtopic2 = Topic(id="git-branch", description="Managing branches in Git")
         subtopics = [subtopic1, subtopic2]
 
         # Act
@@ -114,7 +129,7 @@ class TestTopic:
         topic = Topic(id="git")
         pretopic = Topic(
             id="version-control",
-            description="Managing changes to code over time"
+            description="Managing changes to code over time",
         )
 
         # Act
@@ -122,6 +137,24 @@ class TestTopic:
 
         # Assert
         assert pretopic.id in topic.pretopics
+
+    def test_add_pretopic_invalid_type(self):
+        """Test that adding a pretopic with invalid type raises ValueError."""
+
+        # Arrange
+        topic = Topic(id="git")
+
+        # Act
+        result = None
+        try:
+            topic.add_pretopic(123)
+        except Exception as e:
+            result = e
+
+        # Assert
+        assert isinstance(result, ValueError)
+        assert "string" in str(result)
+        assert "dictionary" in str(result)
 
     def test_add_pretopics_mixed(self):
         """Test adding multiple pretopics as a mix of strings and Topic instances."""
@@ -131,7 +164,7 @@ class TestTopic:
         pretopic1 = "version-control"
         pretopic2 = Topic(
             id="software-development",
-            description="The process of creating software"
+            description="The process of creating software",
         )
         pretopics = [pretopic1, pretopic2]
 
@@ -150,7 +183,7 @@ class TestTopic:
             id="git-merge",
             description="Combining branches in Git",
             subtopics=["git-branch", "git-commit"],
-            pretopics=["cli"]
+            pretopics=["cli"],
         )
 
         # Act
@@ -171,7 +204,7 @@ class TestTopic:
             id="git-merge",
             description="Combining branches in Git",
             subtopics=["git-branch", "git-commit"],
-            pretopics=["cli"]
+            pretopics=["cli"],
         )
 
         # Act

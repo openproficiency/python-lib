@@ -17,7 +17,7 @@ class TestTopicList:
         # Act
         topic_list = TopicList(
             owner=owner,
-            name=name
+            name=name,
         )
 
         # Assert
@@ -38,7 +38,7 @@ class TestTopicList:
         topic_list = TopicList(
             owner=owner,
             name=name,
-            description=description
+            description=description,
         )
 
         # Assert
@@ -53,7 +53,7 @@ class TestTopicList:
         # Arrange
         topic_list = TopicList(
             owner="github",
-            name="git"
+            name="git",
         )
         topic_id = "git-commit"
 
@@ -70,11 +70,11 @@ class TestTopicList:
         # Arrange
         topic_list = TopicList(
             owner="github",
-            name="git"
+            name="git",
         )
         topic1 = Topic(
             id="git-commit",
-            description="Storing changes to the Git history"
+            description="Storing changes to the Git history",
         )
 
         # Act
@@ -90,7 +90,7 @@ class TestTopicList:
         # Arrange
         topic_list = TopicList(
             owner="github",
-            name="git"
+            name="git",
         )
         topic = Topic(id="git-commit")
         topic_list.topics[topic.id] = topic
@@ -108,7 +108,7 @@ class TestTopicList:
         # Arrange
         topic_list = TopicList(
             owner="github",
-            name="git"
+            name="git",
         )
         topic = Topic(id="git-commit")
         topic_list.topics[topic.id] = topic
@@ -128,7 +128,7 @@ class TestTopicList:
         name = "git"
         topic_list = TopicList(
             owner=owner,
-            name=name
+            name=name,
         )
 
         # Act
@@ -203,7 +203,7 @@ class TestTopicList:
                     "description": "Parallel versions of work",
                     "pretopic": ["git-commit"]
                 },
-                
+
                 "actions": {
                     "description": "Storing changes to the Git history",
                     "subtopics": ["git-branch"]
@@ -244,12 +244,12 @@ class TestTopicList:
             "name": "github",
             "description": "Features of the GitHub platform",
             "topics": {
-                
+
                 "repositories": {
                     "description": "Versioning code with Git repositories",
                     "subtopics": [
                         "commit-history",
-                        { 
+                        {
                             "id": "community-files",
                             "description": "Essential files for repository community health",
                             "subtopics": [
@@ -290,7 +290,7 @@ class TestTopicList:
             "name": "github-features",
             "description": "Features of the GitHub platform",
             "topics": {
-                
+
                 "actions": {
                     "description": "Storing changes to the Git history",
                     "pretopics": ["yaml"]
@@ -336,12 +336,12 @@ class TestTopicList:
             "name": "github-features",
             "description": "Features of the GitHub platform",
             "topics": {
-                
+
                 "repositories": {
                     "description": "Versioning code with Git repositories",
                     "pretopics": [
                         "git-commit",
-                        { 
+                        {
                             "id": "git-merge",
                             "description": "Essential files for repository community health",
                             "pretopics": [
@@ -383,18 +383,22 @@ class TestTopicList:
             name="github-features",
             description="Features of the GitHub platform",
         )
-        topic_list.add_topic(Topic(
-            id="actions",
-            description="Storing changes to the Git history",
-            subtopics=["automation"],
-            pretopics=["yaml"]
-        ))
-        topic_list.add_topic(Topic(
-            id="repositories",
-            description="Versioning code with Git repositories",
-            subtopics=["git-clone"],
-            pretopics=["git-push"]
-        ))
+        topic_list.add_topic(
+            Topic(
+                id="actions",
+                description="Storing changes to the Git history",
+                subtopics=["automation"],
+                pretopics=["yaml"],
+            )
+        )
+        topic_list.add_topic(
+            Topic(
+                id="repositories",
+                description="Versioning code with Git repositories",
+                subtopics=["git-clone"],
+                pretopics=["git-push"],
+            )
+        )
 
         # Act
         data = topic_list.to_dict()
@@ -425,18 +429,22 @@ class TestTopicList:
             name="github-features",
             description="Features of the GitHub platform",
         )
-        topic_list.add_topic(Topic(
-            id="actions",
-            description="Storing changes to the Git history",
-            subtopics=["automation"],
-            pretopics=["yaml"]
-        ))
-        topic_list.add_topic(Topic(
-            id="repositories",
-            description="Versioning code with Git repositories",
-            subtopics=["git-clone"],
-            pretopics=["git-push"]
-        ))
+        topic_list.add_topic(
+            Topic(
+                id="actions",
+                description="Storing changes to the Git history",
+                subtopics=["automation"],
+                pretopics=["yaml"],
+            )
+        )
+        topic_list.add_topic(
+            Topic(
+                id="repositories",
+                description="Versioning code with Git repositories",
+                subtopics=["git-clone"],
+                pretopics=["git-push"],
+            )
+        )
 
         # Act
         json_data = topic_list.to_json()
@@ -458,3 +466,52 @@ class TestTopicList:
         assert data["topics"]["repositories"]["description"] == "Versioning code with Git repositories"
         assert "git-clone" in data["topics"]["repositories"]["subtopics"]
         assert "git-push" in data["topics"]["repositories"]["pretopics"]
+
+    def test_from_json_invalid_type(self):
+        """Test that from_json raises TypeError for non-string input."""
+
+        # Act
+        result = None
+        try:
+            TopicList.from_json({"owner": "test"})
+        except Exception as e:
+            result = e
+
+        # Assert
+        assert isinstance(result, TypeError)
+        assert "must be a JSON string" in str(result)
+
+    def test_from_json_invalid_json(self):
+        """Test that from_json raises exception for invalid JSON string."""
+
+        # Arrange
+        invalid_json = "{this is not valid json"
+
+        # Act
+        result = None
+        try:
+            TopicList.from_json(invalid_json)
+        except Exception as e:
+            result = e
+
+        # Assert
+        assert isinstance(result, json.JSONDecodeError)
+        assert "Expecting" in str(result)
+
+    # Debugging
+    def test_repr(self):
+        """Test string representation of TopicList."""
+
+        # Arrange
+        topic_list = TopicList(owner="github", name="git")
+        topic_list.add_topic("git-commit")
+        topic_list.add_topic("git-push")
+
+        # Act
+        repr_str = repr(topic_list)
+
+        # Assert
+        assert "TopicList" in repr_str
+        assert "github" in repr_str
+        assert "git" in repr_str
+        assert "topics_count=2" in repr_str

@@ -1,8 +1,7 @@
 """TopicList module for OpenProficiency library."""
 
 import json
-from datetime import datetime
-from typing import Optional, Dict, Any, Union
+from typing import Dict, Any, Union, List, cast
 from .Topic import Topic
 
 
@@ -15,7 +14,7 @@ class TopicList:
         owner: str,
         name: str,
         # Optional
-        description: str = ""
+        description: str = "",
     ):
         # Required
         self.owner = owner
@@ -65,7 +64,7 @@ class TopicList:
 
         # Verify input is json string
         try:
-            data = json.loads(json_data)
+            data = cast(Dict[str, Any], json.loads(json_data))
         except TypeError:
             raise TypeError("Unable to import. 'json_data' must be a JSON string")
         except Exception as e:
@@ -79,7 +78,7 @@ class TopicList:
         )
 
         # Add each topic
-        topics = data.get("topics", {})
+        topics = cast(Dict[str, Any], data.get("topics", {}))
         for topic_id, topic_data in topics.items():
 
             # Find or create Topic
@@ -88,20 +87,21 @@ class TopicList:
                 topic = topic_list.add_topic(Topic(id=topic_id))
 
             if isinstance(topic_data, dict):
-                topic.description = topic_data.get("description", "")
+                topic_dict = cast(Dict[str, Any], topic_data)
+                topic.description = topic_dict.get("description", "")
 
                 # Add subtopics
                 cls._add_subtopics_recursive(
                     topic_list=topic_list,
                     parent_topic=topic,
-                    subtopics=topic_data.get("subtopics", []),
+                    subtopics=cast(List[Any], topic_dict.get("subtopics", [])),
                 )
 
                 # Add pretopics
                 cls._add_pretopics_recursive(
                     topic_list=topic_list,
                     child_topic=topic,
-                    pretopics=topic_data.get("pretopics", []),
+                    pretopics=cast(List[Any], topic_dict.get("pretopics", [])),
                 )
 
             else:
@@ -113,13 +113,13 @@ class TopicList:
     def _add_subtopics_recursive(
         topic_list: "TopicList",
         parent_topic: Topic,
-        subtopics: list,
+        subtopics: List[Any],
     ) -> None:
         """
         Process subtopics and add them to the topic list.
         Handles nested subtopics at any depth using an iterative approach.
         """
-        stack = [(subtopics, parent_topic)]
+        stack: List[tuple[List[Any], Topic]] = [(subtopics, parent_topic)]
 
         while stack:
             current_subtopics, current_parent = stack.pop()
@@ -136,16 +136,17 @@ class TopicList:
 
                 # Handle dictionary with id and optional nested subtopics
                 elif isinstance(subtopic_object, dict) and "id" in subtopic_object:
+                    subtopic_dict = cast(Dict[str, Any], subtopic_object)
                     # Check if the topic already exists
-                    subtopic = topic_list.get_topic(subtopic_object["id"])
+                    subtopic = topic_list.get_topic(subtopic_dict["id"])
                     if subtopic is None:
                         subtopic = Topic(
-                            id=subtopic_object["id"],
-                            description=subtopic_object.get("description", ""),
+                            id=subtopic_dict["id"],
+                            description=subtopic_dict.get("description", ""),
                         )
 
                     # Queue nested subtopics for processing
-                    nested_subtopics = subtopic_object.get("subtopics", [])
+                    nested_subtopics = cast(List[Any], subtopic_dict.get("subtopics", []))
                     if nested_subtopics:
                         stack.append((nested_subtopics, subtopic))
 
@@ -158,14 +159,14 @@ class TopicList:
     def _add_pretopics_recursive(
         topic_list: "TopicList",
         child_topic: Topic,
-        pretopics: list,
+        pretopics: List[Any],
     ) -> None:
         """
         Process pretopics and add them to the topic list.
         Handles nested pretopics at any depth using an iterative approach.
         Pretopics inherit description from child topic if not explicitly set.
         """
-        stack = [(pretopics, child_topic)]
+        stack: List[tuple[List[Any], Topic]] = [(pretopics, child_topic)]
 
         while stack:
             current_pretopics, current_child = stack.pop()
@@ -178,24 +179,21 @@ class TopicList:
                     # Check if the topic already exists
                     pretopic = topic_list.get_topic(pretopic_object)
                     if pretopic is None:
-                        pretopic = Topic(
-                            id=pretopic_object, description=current_child.description
-                        )
+                        pretopic = Topic(id=pretopic_object, description=current_child.description)
 
                 # Handle dictionary with id and optional nested pretopics
                 elif isinstance(pretopic_object, dict) and "id" in pretopic_object:
+                    pretopic_dict = cast(Dict[str, Any], pretopic_object)
                     # Check if the topic already exists
-                    pretopic = topic_list.get_topic(pretopic_object["id"])
+                    pretopic = topic_list.get_topic(pretopic_dict["id"])
                     if pretopic is None:
                         pretopic = Topic(
-                            id=pretopic_object["id"],
-                            description=pretopic_object.get(
-                                "description", current_child.description
-                            ),
+                            id=pretopic_dict["id"],
+                            description=pretopic_dict.get("description", current_child.description),
                         )
 
                     # Queue nested pretopics for processing
-                    nested_pretopics = pretopic_object.get("pretopics", [])
+                    nested_pretopics = cast(List[Any], pretopic_dict.get("pretopics", []))
                     if nested_pretopics:
                         stack.append((nested_pretopics, pretopic))
 
@@ -204,9 +202,9 @@ class TopicList:
                     topic_list.add_topic(pretopic)
                     current_child.add_pretopic(pretopic)
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> Dict[str, Any]:
         """
-        Export the TopicList to a JSON string.
+        Export the TopicList to a dictionary.
         """
 
         # Create dictionary
