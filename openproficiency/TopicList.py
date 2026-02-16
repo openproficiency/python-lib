@@ -1,6 +1,8 @@
 """TopicList module for OpenProficiency library."""
 
 import json
+import re
+from datetime import datetime, timezone
 from typing import Dict, Any, Union, List, cast
 from .Topic import Topic
 
@@ -14,7 +16,10 @@ class TopicList:
         owner: str,
         name: str,
         # Optional
-        description: str = "",
+        description: Union[str, None] = None,
+        version: Union[str, None] = None,
+        timestamp: Union[str, None] = None,
+        certificate: Union[str, None] = None,
     ):
         # Required
         self.owner = owner
@@ -24,6 +29,18 @@ class TopicList:
         self.description = description
         self.topics: Dict[str, Topic] = {}
         self.dependencies: Dict[str, "TopicList"] = {}
+
+        # Set version with validation
+        self.version = version
+
+        # Set timestamp (convert string to datetime, default to current UTC if not provided)
+        if timestamp is None:
+            self._timestamp = datetime.now(timezone.utc)
+        else:
+            self._timestamp = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
+
+        # Set certificate
+        self.certificate = certificate
 
     # Methods
     def add_topic(self, topic: Union[str, Topic]) -> Topic:
@@ -44,6 +61,33 @@ class TopicList:
         return self.topics.get(topic_id, None)
 
     # Properties
+    @property
+    def version(self) -> Union[str, None]:
+        """Get the semantic version of the TopicList."""
+        return self._version
+
+    @version.setter
+    def version(self, value: Union[str, None]) -> None:
+        """Set the semantic version with X.Y.Z format validation."""
+        if value is not None and not re.match(r"^\d+\.\d+\.\d+$", value):
+            raise ValueError(f"Invalid version format: '{value}'. Must be semantic versioning (X.Y.Z)")
+        self._version = value
+
+    @property
+    def timestamp(self) -> datetime:
+        """Get the timestamp as a datetime object."""
+        return self._timestamp
+
+    @timestamp.setter
+    def timestamp(self, value: Union[str, datetime, None]) -> None:
+        """Set the timestamp from a string or datetime object."""
+        if value is None:
+            self._timestamp = datetime.now(timezone.utc)
+        elif isinstance(value, str):
+            self._timestamp = datetime.fromisoformat(value.replace("Z", "+00:00"))
+        else:
+            self._timestamp = value
+
     @property
     def full_name(self) -> str:
         """Get the full name of the TopicList in 'owner/name' format."""
@@ -74,7 +118,10 @@ class TopicList:
         topic_list = TopicList(
             owner=data.get("owner", ""),
             name=data.get("name", ""),
-            description=data.get("description", ""),
+            description=data.get("description"),
+            version=data.get("version"),
+            timestamp=data.get("timestamp"),
+            certificate=data.get("certificate"),
         )
 
         # Add each topic
@@ -211,9 +258,21 @@ class TopicList:
         data: Dict[str, Any] = {
             "owner": self.owner,
             "name": self.name,
-            "description": self.description,
+            "timestamp": self.timestamp.isoformat(),
             "topics": {},
         }
+
+        # Add description if set
+        if self.description is not None:
+            data["description"] = self.description
+
+        # Add version if set
+        if self.version is not None:
+            data["version"] = self.version
+
+        # Add certificate if set
+        if self.certificate is not None:
+            data["certificate"] = self.certificate
 
         # Add each topic
         for topic_id, topic in self.topics.items():
