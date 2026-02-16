@@ -14,7 +14,10 @@ class TestProficiencyScore:
         score = 0.8
 
         # Act
-        ps = ProficiencyScore(topic_id=topic_id, score=score)
+        ps = ProficiencyScore(
+            topic_id=topic_id,
+            score=score,
+        )
 
         # Assert
         assert ps.topic_id == topic_id
@@ -28,7 +31,10 @@ class TestProficiencyScore:
         score_name = ProficiencyScoreName.PROFICIENT
 
         # Act
-        ps = ProficiencyScore(topic_id=topic_id, score=score_name)
+        ps = ProficiencyScore(
+            topic_id=topic_id,
+            score=score_name,
+        )
 
         # Assert
         assert ps.topic_id == topic_id
@@ -37,150 +43,260 @@ class TestProficiencyScore:
     def test_init_invalid_score_too_low(self):
         """Test that score below 0.0 raises ValueError."""
 
-        # Act & Assert
+        # Act
+        result = None
         try:
-            ProficiencyScore(topic_id="test", score=-0.1)
-            assert False, "Should have raised ValueError"
-        except ValueError as e:
-            assert "between 0.0 and 1.0" in str(e)
+            ProficiencyScore(
+                topic_id="test",
+                score=-0.1,
+            )
+        except Exception as e:
+            result = e
+
+        # Assert
+        assert isinstance(result, ValueError)
+        assert "0.0" in str(result)
+        assert "1.0" in str(result)
 
     def test_init_invalid_score_too_high(self):
         """Test that score above 1.0 raises ValueError."""
 
-        # Act & Assert
+        # Act
+        result = None
         try:
-            ProficiencyScore(topic_id="test", score=1.1)
-            assert False, "Should have raised ValueError"
-        except ValueError as e:
-            assert "between 0.0 and 1.0" in str(e)
+            ProficiencyScore(
+                topic_id="test",
+                score=1.1,
+            )
+        except Exception as e:
+            result = e
+
+        # Assert
+        assert isinstance(result, ValueError)
+        assert "0.0" in str(result)
+        assert "1.0" in str(result)
 
     def test_init_invalid_score_type(self):
         """Test that invalid score type raises ValueError."""
 
-        # Act & Assert
+        # Act
+        result = None
         try:
-            ProficiencyScore(topic_id="test", score="invalid")
-            assert False, "Should have raised ValueError"
-        except ValueError as e:
-            assert "numeric or ProficiencyScoreName" in str(e)
+            ProficiencyScore(
+                topic_id="test",
+                score="invalid",
+            )
+        except Exception as e:
+            result = e
 
-    # Properties - Score
-    def test_score_getter(self):
-        """Test getting score property."""
+        # Assert
+        assert isinstance(result, ValueError)
+        assert "ProficiencyScoreName" in str(result)
 
-        # Arrange
-        ps = ProficiencyScore(topic_id="test", score=0.5)
-
-        # Act & Assert
-        assert ps.score == 0.5
-
-    def test_score_setter_numeric(self):
+    # Properties
+    def test_score_numeric(self):
         """Test setting score with numeric value."""
 
         # Arrange
-        ps = ProficiencyScore(topic_id="test", score=0.1)
+        ps = ProficiencyScore(
+            topic_id="test",
+            score=0.1,
+        )
 
         # Act
         ps.score = 0.9
 
         # Assert
         assert ps.score == 0.9
+        assert ps.score_name == ProficiencyScoreName.PROFICIENT
 
-    def test_score_setter_enum(self):
+    def test_score_numeric_invalid(self):
+        """Test setting invalid numeric score raises ValueError."""
+
+        # Arrange
+        ps = ProficiencyScore(
+            topic_id="test",
+            score=0.1,
+        )
+
+        # Act
+        result = None
+        try:
+            ps.score = 1.5
+        except Exception as e:
+            result = e
+
+        # Assert
+        # Check that result is a ValueError and contains the expected message
+        assert isinstance(result, ValueError)
+        assert "0.0" in str(result)
+        assert "1.0" in str(result)
+
+    def test_score_enum(self):
         """Test setting score with enum value."""
 
         # Arrange
-        ps = ProficiencyScore(topic_id="test", score=0.1)
+        ps = ProficiencyScore(
+            topic_id="test",
+            score=0.1,
+        )
 
         # Act
         ps.score = ProficiencyScoreName.FAMILIAR
 
         # Assert
         assert ps.score == 0.5
+        assert ps.score_name == ProficiencyScoreName.FAMILIAR
 
-    def test_score_setter_invalid(self):
-        """Test setting invalid score raises ValueError."""
-
-        # Arrange
-        ps = ProficiencyScore(topic_id="test", score=0.1)
-
-        # Act & Assert
-        try:
-            ps.score = 1.5
-            assert False, "Should have raised ValueError"
-        except ValueError:
-            pass
-
-    # Properties - Score Name
     def test_score_name_unaware(self):
         """Test score_name property for UNAWARE level."""
 
         # Arrange
-        ps = ProficiencyScore(topic_id="test", score=0.0)
+        ps = ProficiencyScore(
+            topic_id="test",
+            score=0.0,
+        )
 
-        # Act & Assert
-        assert ps.score_name == ProficiencyScoreName.UNAWARE
+        # Act
+        result = ps.score_name
+
+        # Assert
+        assert result == ProficiencyScoreName.UNAWARE
 
     def test_score_name_aware(self):
         """Test score_name property for AWARE level."""
 
         # Arrange
-        ps = ProficiencyScore(topic_id="test", score=0.05)
+        ps = ProficiencyScore(
+            topic_id="test",
+            score=0.1,
+        )
 
-        # Act & Assert
-        assert ps.score_name == ProficiencyScoreName.AWARE
+        # Act
+        result = ps.score_name
+
+        # Assert
+        assert result == ProficiencyScoreName.AWARE
 
     def test_score_name_familiar(self):
         """Test score_name property for FAMILIAR level."""
 
         # Arrange
-        ps = ProficiencyScore(topic_id="test", score=0.3)
+        ps = ProficiencyScore(
+            topic_id="test",
+            score=0.5,
+        )
 
-        # Act & Assert
-        assert ps.score_name == ProficiencyScoreName.FAMILIAR
+        # Act
+        result = ps.score_name
+
+        # Assert
+        assert result == ProficiencyScoreName.FAMILIAR
 
     def test_score_name_proficient(self):
         """Test score_name property for PROFICIENT level."""
 
         # Arrange
-        ps = ProficiencyScore(topic_id="test", score=0.8)
+        ps = ProficiencyScore(
+            topic_id="test",
+            score=0.8,
+        )
 
-        # Act & Assert
-        assert ps.score_name == ProficiencyScoreName.PROFICIENT
+        # Act
+        result = ps.score_name
+
+        # Assert
+        assert result == ProficiencyScoreName.PROFICIENT
 
     def test_score_name_proficient_with_evidence(self):
         """Test score_name property for PROFICIENT_WITH_EVIDENCE level."""
 
         # Arrange
-        ps = ProficiencyScore(topic_id="test", score=1.0)
-
-        # Act & Assert
-        assert ps.score_name == ProficiencyScoreName.PROFICIENT_WITH_EVIDENCE
-
-    def test_score_name_setter(self):
-        """Test setting score_name property."""
-
-        # Arrange
-        ps = ProficiencyScore(topic_id="test", score=0.1)
+        ps = ProficiencyScore(
+            topic_id="test",
+            score=1.0,
+        )
 
         # Act
-        ps.score_name = ProficiencyScoreName.PROFICIENT
+        result = ps.score_name
 
         # Assert
-        assert ps.score == 0.8
+        assert result == ProficiencyScoreName.PROFICIENT_WITH_EVIDENCE
 
-    def test_score_name_setter_invalid_type(self):
-        """Test setting score_name with invalid type raises ValueError."""
+    # Static Methods
+    def test_get_score_name_unaware(self):
+        """Test get_score_name returns UNAWARE for score 0.0."""
 
         # Arrange
-        ps = ProficiencyScore(topic_id="test", score=0.1)
+        score = 0.0
 
-        # Act & Assert
+        # Act
+        result = ProficiencyScore.get_score_name(score)
+
+        # Assert
+        assert result == ProficiencyScoreName.UNAWARE
+
+    def test_get_score_name_aware(self):
+        """Test get_score_name returns AWARE for score 0.1."""
+
+        # Arrange
+        score = 0.1
+
+        # Act
+        result = ProficiencyScore.get_score_name(score)
+
+        # Assert
+        assert result == ProficiencyScoreName.AWARE
+
+    def test_get_score_name_familiar(self):
+        """Test get_score_name returns FAMILIAR for score 0.5."""
+
+        # Arrange
+        score = 0.5
+
+        # Act
+        result = ProficiencyScore.get_score_name(score)
+
+        # Assert
+        assert result == ProficiencyScoreName.FAMILIAR
+
+    def test_get_score_name_proficient(self):
+        """Test get_score_name returns PROFICIENT for score 0.8."""
+
+        # Arrange
+        score = 0.8
+
+        # Act
+        result = ProficiencyScore.get_score_name(score)
+
+        # Assert
+        assert result == ProficiencyScoreName.PROFICIENT
+
+    def test_get_score_name_proficient_with_evidence(self):
+        """Test get_score_name returns PROFICIENT_WITH_EVIDENCE for score 1.0."""
+
+        # Arrange
+        score = 1.0
+
+        # Act
+        result = ProficiencyScore.get_score_name(score)
+
+        # Assert
+        assert result == ProficiencyScoreName.PROFICIENT_WITH_EVIDENCE
+
+    def test_get_score_name_invalid(self):
+        """Test get_score_name static method with invalid score."""
+
+        # Act
+        result = None
         try:
-            ps.score_name = 0.5
-            assert False, "Should have raised ValueError"
-        except ValueError as e:
-            assert "ProficiencyScoreName enum" in str(e)
+            ProficiencyScore.get_score_name(-0.1)
+        except Exception as e:
+            result = e
+
+        # Assert
+        assert isinstance(result, ValueError)
+        assert "Invalid" in str(result)
 
     # Methods
     def test_to_dict(self):
@@ -189,7 +305,10 @@ class TestProficiencyScore:
         # Arrange
         topic_id = "git-commit"
         score = 0.8
-        ps = ProficiencyScore(topic_id=topic_id, score=score)
+        ps = ProficiencyScore(
+            topic_id=topic_id,
+            score=score,
+        )
 
         # Act
         json_dict = ps.to_dict()
@@ -197,7 +316,7 @@ class TestProficiencyScore:
         # Assert
         assert json_dict == {
             "topic_id": topic_id,
-            "score": score
+            "score": score,
         }
 
     def test_to_json(self):
@@ -206,7 +325,10 @@ class TestProficiencyScore:
         # Arrange
         topic_id = "git-commit"
         score = 0.8
-        ps = ProficiencyScore(topic_id=topic_id, score=score)
+        ps = ProficiencyScore(
+            topic_id=topic_id,
+            score=score,
+        )
 
         # Act
         json_str = ps.to_json()
@@ -220,7 +342,10 @@ class TestProficiencyScore:
         """Test string representation of ProficiencyScore."""
 
         # Arrange
-        ps = ProficiencyScore(topic_id="git-commit", score=0.8)
+        ps = ProficiencyScore(
+            topic_id="git-commit",
+            score=0.8,
+        )
 
         # Act
         repr_str = repr(ps)

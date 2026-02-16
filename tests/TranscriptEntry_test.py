@@ -144,6 +144,53 @@ class TestTranscriptEntry:
         )
         assert json_str == expected_json
 
+    # Methods - Static
+    def test_from_dict(self):
+        """Test creating TranscriptEntry from dictionary."""
+
+        # Arrange
+        data = {
+            "user_id": "user-456",
+            "topic_id": "git-branch",
+            "score": 0.6,
+            "issuer": "test-issuer",
+            "timestamp": "2024-02-20T15:45:30",
+        }
+
+        # Act
+        entry = TranscriptEntry.from_dict(data)
+
+        # Assert
+        assert entry.user_id == "user-456"
+        assert entry.proficiency_score.topic_id == "git-branch"
+        assert entry.proficiency_score.score == 0.6
+        assert entry.issuer == "test-issuer"
+        assert entry.timestamp.year == 2024
+        assert entry.timestamp.month == 2
+        assert entry.timestamp.day == 20
+
+    def test_from_json(self):
+        """Test creating TranscriptEntry from JSON string."""
+
+        # Arrange
+        json_str = (
+            '{"user_id": "user-789", "topic_id": "git-merge", '
+            '"score": 0.9, "issuer": "test-system", '
+            '"timestamp": "2024-03-10T08:20:15"}'
+        )
+
+        # Act
+        entry = TranscriptEntry.from_json(json_str)
+
+        # Assert
+        assert entry.user_id == "user-789"
+        assert entry.proficiency_score.topic_id == "git-merge"
+        assert entry.proficiency_score.score == 0.9
+        assert entry.issuer == "test-system"
+        assert entry.timestamp.year == 2024
+        assert entry.timestamp.month == 3
+        assert entry.timestamp.day == 10
+
     # Debugging
     def test_repr(self):
         """Test string representation of TranscriptEntry."""

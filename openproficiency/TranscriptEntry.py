@@ -52,11 +52,11 @@ class TranscriptEntry:
         """Convert TranscriptEntry to JSON string."""
         return json.dumps(self.to_dict())
 
-    # Methods - Class
-    @classmethod
-    def from_dict(cls, data: dict[str, Union[str, int, float]]) -> "TranscriptEntry":
+    # Methods - Static
+    @staticmethod
+    def from_dict(data: dict[str, Union[str, int, float]]) -> "TranscriptEntry":
         """Create a TranscriptEntry from a dictionary."""
-        return cls(
+        return TranscriptEntry(
             user_id=data["user_id"],
             topic_id=data["topic_id"],
             score=data["score"],
@@ -64,10 +64,10 @@ class TranscriptEntry:
             timestamp=datetime.fromisoformat(data["timestamp"]),
         )
 
-    @classmethod
-    def from_json(cls, json_str: str) -> "TranscriptEntry":
+    @staticmethod
+    def from_json(json_str: str) -> "TranscriptEntry":
         """Create a TranscriptEntry from a JSON string."""
-        return cls.from_dict(json.loads(json_str))
+        return TranscriptEntry.from_dict(json.loads(json_str))
 
     # Debugging
     def __repr__(self) -> str:

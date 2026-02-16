@@ -7,6 +7,7 @@ from typing import Union
 
 class ProficiencyScoreName(Enum):
     """Enum for proficiency score names."""
+
     UNAWARE = 0.0
     AWARE = 0.1
     FAMILIAR = 0.5
@@ -22,11 +23,11 @@ class ProficiencyScore:
         self,
         # Required
         topic_id: str,
-        score: Union[float, ProficiencyScoreName]
+        score: Union[float, ProficiencyScoreName],
     ):
         # Required
         self.topic_id = topic_id
-        self._set_score(score)
+        self.score = score
 
     # Properties - Score
     @property
@@ -37,67 +38,60 @@ class ProficiencyScore:
     @score.setter
     def score(self, value: Union[float, ProficiencyScoreName]) -> None:
         """Set the score numerically or using a ProficiencyScoreName enum."""
-        self._set_score(value)
+        # If numeric, directly store it.
+        if isinstance(value, (int, float)):
+            if not (0.0 <= value <= 1.0):
+                raise ValueError(f"Score must be between 0.0 and 1.0, got {value}")
+            self._score = float(value)
+
+        # If enum, store as numeric value.
+        elif isinstance(value, ProficiencyScoreName):
+            self._score = value.value
+
+        else:
+            raise ValueError(f"Score must be numeric or ProficiencyScoreName enum. Got type: '{type(value)}'")
 
     # Properties - Score
     @property
     def score_name(self) -> ProficiencyScoreName:
         """Get the proficiency name as an enum value."""
-        return self._get_name_from_score(self._score)
-
-    @score_name.setter
-    def score_name(self, value: ProficiencyScoreName) -> None:
-        """Set the proficiency name using a ProficiencyScoreName enum."""
-        if not isinstance(value, ProficiencyScoreName):
-            raise ValueError(
-                f"Name must be a ProficiencyScoreName enum, got {type(value)}")
-        self._score = value.value
+        return ProficiencyScore.get_score_name(self._score)
 
     # Methods
-    def _set_score(self, value: Union[float, ProficiencyScoreName]) -> None:
-        """Internal method to set score from numeric or enum value."""
-        if isinstance(value, ProficiencyScoreName):
-            self._score = value.value
-
-        elif isinstance(value, (int, float)):
-            # Validate score is between 0.0 and 1.0
-            if not (0.0 <= value <= 1.0):
-                raise ValueError(
-                    f"Score must be between 0.0 and 1.0, got {value}")
-            self._score = float(value)
-
-        else:
-            raise ValueError(
-                f"Score must be numeric or ProficiencyScoreName enum. Got type: '{type(value)}'")
-
-    def _get_name_from_score(self, score: float) -> ProficiencyScoreName:
-        """Internal method to determine proficiency name from numeric score."""
-        if score <= 0.0:
-            return ProficiencyScoreName.UNAWARE
-        elif score <= 0.1:
-            return ProficiencyScoreName.AWARE
-        elif score <= 0.5:
-            return ProficiencyScoreName.FAMILIAR
-        elif score <= 0.8:
-            return ProficiencyScoreName.PROFICIENT
-        elif score <= 1.0:
-            return ProficiencyScoreName.PROFICIENT_WITH_EVIDENCE
-        else:
-            raise ValueError(f"Invalid score value: {score}")
-
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, float]:
         """Convert to a JSON-serializable dictionary."""
         return {
             "topic_id": self.topic_id,
-            "score": self._score
+            "score": self._score,
         }
 
     def to_json(self) -> str:
         """Convert to a JSON string."""
         return json.dumps(self.to_dict())
 
-    # Debugging
+    # Static Methods
+    @staticmethod
+    def get_score_name(score: float) -> ProficiencyScoreName:
+        """Internal method to determine proficiency name from numeric score."""
+        if score == 1.0:
+            return ProficiencyScoreName.PROFICIENT_WITH_EVIDENCE
 
+        elif score >= 0.8:
+            return ProficiencyScoreName.PROFICIENT
+
+        elif score >= 0.5:
+            return ProficiencyScoreName.FAMILIAR
+
+        elif score >= 0.1:
+            return ProficiencyScoreName.AWARE
+
+        elif score >= 0.0:
+            return ProficiencyScoreName.UNAWARE
+
+        else:
+            raise ValueError(f"Invalid score value: {score}")
+
+    # Debugging
     def __repr__(self) -> str:
         """String representation of ProficiencyScore."""
         return f"ProficiencyScore(topic_id='{self.topic_id}', score={self._score}, name={self.score_name.name})"
