@@ -3,6 +3,7 @@
 import json
 from enum import Enum
 from typing import Union
+from .validators import validate_kebab_case
 
 
 class ProficiencyScoreName(Enum):
@@ -29,7 +30,18 @@ class ProficiencyScore:
         self.topic_id = topic_id
         self.score = score
 
-    # Properties - Score
+    # Properties
+    @property
+    def topic_id(self) -> str:
+        """Get the topic ID."""
+        return self._topic_id
+
+    @topic_id.setter
+    def topic_id(self, value: str) -> None:
+        """Set the topic ID. kebab-case"""
+        validate_kebab_case(value)
+        self._topic_id = value
+
     @property
     def score(self) -> float:
         """Get the score as a numeric value between 0.0 and 1.0."""
