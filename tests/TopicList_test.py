@@ -374,8 +374,8 @@ class TestTopicList:
         assert "git-pull" in topic_list.topics
         assert topic_list.topics["git-pull"].description == "Versioning code with Git repositories"
 
-    def test_to_json_simple(self):
-        """Exporting a simple TopicList to JSON."""
+    def test_to_dict_simple(self):
+        """Exporting a simple TopicList to dictionary."""
 
         # Arrange
         topic_list = TopicList(
@@ -383,16 +383,60 @@ class TestTopicList:
             name="github-features",
             description="Features of the GitHub platform",
         )
-        topic1 = Topic(id="actions", description="Storing changes to the Git history")
-        topic1.add_subtopic("automation")
-        topic1.add_pretopic("yaml")
+        topic_list.add_topic(Topic(
+            id="actions",
+            description="Storing changes to the Git history",
+            subtopics=["automation"],
+            pretopics=["yaml"]
+        ))
+        topic_list.add_topic(Topic(
+            id="repositories",
+            description="Versioning code with Git repositories",
+            subtopics=["git-clone"],
+            pretopics=["git-push"]
+        ))
 
-        topic2 = Topic(id="repositories", description="Versioning code with Git repositories")
-        topic2.add_subtopic("git-clone")
-        topic2.add_pretopic("git-push")
+        # Act
+        data = topic_list.to_dict()
 
-        topic_list.add_topic(topic1)
-        topic_list.add_topic(topic2)
+        # Assert - List Info
+        assert data["owner"] == "github"
+        assert data["name"] == "github-features"
+        assert data["description"] == "Features of the GitHub platform"
+
+        # Assert - Topic 1
+        assert "actions" in data["topics"]
+        assert data["topics"]["actions"]["description"] == "Storing changes to the Git history"
+        assert "automation" in data["topics"]["actions"]["subtopics"]
+        assert "yaml" in data["topics"]["actions"]["pretopics"]
+
+        # Assert - Topic 2
+        assert "repositories" in data["topics"]
+        assert data["topics"]["repositories"]["description"] == "Versioning code with Git repositories"
+        assert "git-clone" in data["topics"]["repositories"]["subtopics"]
+        assert "git-push" in data["topics"]["repositories"]["pretopics"]
+
+    def test_to_json_simple(self):
+        """Exporting a simple TopicList to JSON string."""
+
+        # Arrange
+        topic_list = TopicList(
+            owner="github",
+            name="github-features",
+            description="Features of the GitHub platform",
+        )
+        topic_list.add_topic(Topic(
+            id="actions",
+            description="Storing changes to the Git history",
+            subtopics=["automation"],
+            pretopics=["yaml"]
+        ))
+        topic_list.add_topic(Topic(
+            id="repositories",
+            description="Versioning code with Git repositories",
+            subtopics=["git-clone"],
+            pretopics=["git-push"]
+        ))
 
         # Act
         json_data = topic_list.to_json()

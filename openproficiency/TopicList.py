@@ -15,7 +15,7 @@ class TopicList:
         owner: str,
         name: str,
         # Optional
-        description: str = "",
+        description: str = ""
     ):
         # Required
         self.owner = owner
@@ -204,7 +204,7 @@ class TopicList:
                     topic_list.add_topic(pretopic)
                     current_child.add_pretopic(pretopic)
 
-    def to_json(self) -> str:
+    def to_dict(self) -> dict:
         """
         Export the TopicList to a JSON string.
         """
@@ -234,4 +234,8 @@ class TopicList:
             # Store in data
             data["topics"][topic_id] = topic_data
 
-        return json.dumps(data, indent=2)
+        return data
+
+    def to_json(self) -> str:
+        """Convert TopicList to JSON string."""
+        return json.dumps(self.to_dict())

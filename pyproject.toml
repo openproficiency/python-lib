@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "openproficiency"
-version = "0.1.0"
+version = "0.0.3"
 description = "A simple library for managing proficiency topics and topic lists"
 readme = "README.md"
 requires-python = ">=3.10"

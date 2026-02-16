@@ -90,6 +90,53 @@ t_algebra = Topic(
 )
 ```
 
+### Create a Proficiency Score, by name
+
+A **Proficiency Score** represents a person's level of proficiency in a specific topic.
+
+```python
+proficiency_score = ProficiencyScore(
+    topic_id="addition",
+    score=ProficiencyScoreName.PROFICIENT
+)
+```
+
+### Create a Proficiency Score, numerically
+
+All score are internally numeric from 0.0 to 1.0, even if set using the score name (above).
+
+```python
+proficiency_score = ProficiencyScore(
+    topic_id="arithmetic",
+    score=0.8 # Same as 'ProficiencyScoreName.PROFICIENT'
+)
+```
+
+### Issue a Transcript Entry
+
+A **Transcript Entry** associates a proficiency score to a user and is claimed by an issuer.
+
+```python
+from openproficiency import TranscriptEntry
+
+# Create a transcript entry
+entry = TranscriptEntry(
+    user_id="john-doe",
+    topic_id="arithmetic",
+    score=0.9,
+    issuer="university-of-example"
+)
+
+# Access the transcript entry information
+print(entry.user_id)  # john-doe
+print(entry.proficiency_score.score)  # 0.9
+print(entry.issuer)  # university-of-example
+print(entry.timestamp)  # datetime object
+
+# Convert to JSON for storage or transmission
+entry_json = entry.to_json()
+```
+
 ## How to Develop
 
 This project is open to pull requests.
