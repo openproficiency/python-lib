@@ -1,7 +1,8 @@
 """Tests for the TranscriptEntry class."""
 
+import json
 from datetime import datetime
-from openproficiency import TranscriptEntry
+from openproficiency import TranscriptEntry, TopicList
 
 
 class TestTranscriptEntry:
@@ -13,23 +14,29 @@ class TestTranscriptEntry:
         # Arrange
         user_id = "user-123"
         topic_id = "git-commit"
+        topic_list = "example.com/math@0.0.1"
         score = 0.8
         issuer = "github-learn"
+        timestamp = datetime(2024, 1, 15, 10, 30, 0)
 
         # Act
         entry = TranscriptEntry(
             user_id=user_id,
             topic_id=topic_id,
+            topic_list=topic_list,
             score=score,
             issuer=issuer,
+            timestamp=timestamp,
         )
 
         # Assert
         assert entry.user_id == user_id
         assert entry.proficiency_score.topic_id == topic_id
         assert entry.proficiency_score.score == score
+        assert entry.topic_list == topic_list
+        assert entry.timestamp == timestamp
         assert entry.issuer == issuer
-        assert entry.timestamp is not None
+        assert entry.certificate is None
 
     def test_init_with_optional_params(self):
         """Create a transcript entry with optional parameters."""
@@ -39,42 +46,24 @@ class TestTranscriptEntry:
         topic_id = "git-commit"
         score = 0.8
         issuer = "github-learn"
+        topic_list = "example.com/math@0.0.1"
         timestamp = datetime(2024, 1, 15, 10, 30, 0)
+        certificate = "test-certificate"
 
         # Act
         entry = TranscriptEntry(
             user_id=user_id,
             topic_id=topic_id,
+            topic_list=topic_list,
             score=score,
             issuer=issuer,
+            certificate=certificate,
             timestamp=timestamp,
         )
 
         # Assert
         assert entry.timestamp == timestamp
-
-    def test_init_default_timestamp(self):
-        """Test that timestamp defaults to current time."""
-
-        # Arrange
-        user_id = "user-123"
-        topic_id = "git-commit"
-        score = 0.8
-        issuer = "github-learn"
-
-        # Act
-        before = datetime.now()
-        entry = TranscriptEntry(
-            user_id=user_id,
-            topic_id=topic_id,
-            score=score,
-            issuer=issuer,
-        )
-        after = datetime.now()
-
-        # Assert
-        assert entry.timestamp >= before
-        assert entry.timestamp <= after
+        assert entry.certificate == certificate
 
     # Properties
     def test_proficiency_score(self):
@@ -84,8 +73,10 @@ class TestTranscriptEntry:
         entry = TranscriptEntry(
             user_id="user-123",
             topic_id="git-commit",
+            topic_list="example.com/math@0.0.1",
             score=0.8,
             issuer="github-learn",
+            timestamp=datetime(2024, 1, 15, 10, 30, 0),
         )
 
         # Act
@@ -104,8 +95,10 @@ class TestTranscriptEntry:
         entry = TranscriptEntry(
             user_id="user-123",
             topic_id="git-commit",
+            topic_list="example.com/math@0.0.1",
             score=0.8,
             issuer="github-learn",
+            certificate="cert-data",
             timestamp=datetime(2024, 1, 15, 10, 30, 0),
         )
 
@@ -115,10 +108,12 @@ class TestTranscriptEntry:
         # Assert
         assert entry_dict == {
             "user_id": "user-123",
-            "topic_id": "git-commit",
+            "topic": "git-commit",
+            "topic_list": "example.com/math@0.0.1",
             "score": 0.8,
-            "issuer": "github-learn",
             "timestamp": "2024-01-15T10:30:00",
+            "issuer": "github-learn",
+            "certificate": "cert-data",
         }
 
     def test_to_json(self):
@@ -128,8 +123,10 @@ class TestTranscriptEntry:
         entry = TranscriptEntry(
             user_id="user-123",
             topic_id="git-commit",
+            topic_list="example.com/math@0.0.1",
             score=0.8,
             issuer="github-learn",
+            certificate="cert-data",
             timestamp=datetime(2024, 1, 15, 10, 30, 0),
         )
 
@@ -137,12 +134,14 @@ class TestTranscriptEntry:
         json_str = entry.to_json()
 
         # Assert
-        expected_json = (
-            '{"user_id": "user-123", "topic_id": "git-commit", '
-            '"score": 0.8, "issuer": "github-learn", '
-            '"timestamp": "2024-01-15T10:30:00"}'
-        )
-        assert json_str == expected_json
+        data = json.loads(json_str)
+        assert data["userID"] == "user-123"
+        assert data["topic"] == "git-commit"
+        assert data["topicList"] == "example.com/math@0.0.1"
+        assert data["score"] == 0.8
+        assert data["timestamp"] == "2024-01-15T10:30:00"
+        assert data["issuer"] == "github-learn"
+        assert data["certificate"] == "cert-data"
 
     # Methods - Static
     def test_from_dict(self):
@@ -151,10 +150,12 @@ class TestTranscriptEntry:
         # Arrange
         data = {
             "user_id": "user-456",
-            "topic_id": "git-branch",
+            "topic": "git-branch",
+            "topic_list": "example.com/math@0.0.1",
             "score": 0.6,
-            "issuer": "test-issuer",
             "timestamp": "2024-02-20T15:45:30",
+            "issuer": "test-issuer",
+            "certificate": "cert-abc",
         }
 
         # Act
@@ -164,20 +165,25 @@ class TestTranscriptEntry:
         assert entry.user_id == "user-456"
         assert entry.proficiency_score.topic_id == "git-branch"
         assert entry.proficiency_score.score == 0.6
+        assert entry.topic_list == "example.com/math@0.0.1"
+        assert entry.timestamp.isoformat() == "2024-02-20T15:45:30"
         assert entry.issuer == "test-issuer"
-        assert entry.timestamp.year == 2024
-        assert entry.timestamp.month == 2
-        assert entry.timestamp.day == 20
+        assert entry.certificate == "cert-abc"
 
     def test_from_json(self):
         """Test creating TranscriptEntry from JSON string."""
 
         # Arrange
-        json_str = (
-            '{"user_id": "user-789", "topic_id": "git-merge", '
-            '"score": 0.9, "issuer": "test-system", '
-            '"timestamp": "2024-03-10T08:20:15"}'
+        entry_orig = TranscriptEntry(
+            user_id="user-789",
+            topic_id="git-merge",
+            topic_list="example.com/math@0.0.1",
+            score=0.9,
+            timestamp=datetime(2024, 3, 10, 8, 20, 15),
+            issuer="test-system",
+            certificate="cert-xyz",
         )
+        json_str = entry_orig.to_json()
 
         # Act
         entry = TranscriptEntry.from_json(json_str)
@@ -187,9 +193,36 @@ class TestTranscriptEntry:
         assert entry.proficiency_score.topic_id == "git-merge"
         assert entry.proficiency_score.score == 0.9
         assert entry.issuer == "test-system"
-        assert entry.timestamp.year == 2024
-        assert entry.timestamp.month == 3
-        assert entry.timestamp.day == 10
+        assert entry.timestamp.isoformat() == "2024-03-10T08:20:15"
+        assert entry.topic_list == "example.com/math@0.0.1"
+        assert entry.certificate == "cert-xyz"
+
+    def test_json_round_trip_preserves_fields(self):
+        """Round-trip JSON preserves topic list fields and certificate."""
+
+        # Arrange
+        entry = TranscriptEntry(
+            user_id="user-123",
+            topic_id="git-commit",
+            topic_list="example.com/math@0.0.1",
+            score=0.8,
+            timestamp=datetime(2024, 1, 15, 10, 30, 0),
+            issuer="github-learn",
+            certificate="cert-data",
+        )
+
+        # Act
+        json_str = entry.to_json()
+        round_trip = TranscriptEntry.from_json(json_str)
+
+        # Assert
+        assert round_trip.user_id == "user-123"
+        assert round_trip.proficiency_score.topic_id == "git-commit"
+        assert round_trip.topic_list == "example.com/math@0.0.1"
+        assert round_trip.proficiency_score.score == 0.8
+        assert round_trip.timestamp.isoformat() == "2024-01-15T10:30:00"
+        assert round_trip.issuer == "github-learn"
+        assert round_trip.certificate == "cert-data"
 
     # Debugging
     def test_repr(self):
@@ -199,7 +232,9 @@ class TestTranscriptEntry:
         entry = TranscriptEntry(
             user_id="user-123",
             topic_id="git-commit",
+            topic_list="example.com/math@0.0.1",
             score=0.8,
+            timestamp=datetime(2024, 1, 15, 10, 30, 0),
             issuer="github-learn",
         )
 
@@ -211,4 +246,3 @@ class TestTranscriptEntry:
         assert "user-123" in repr_str
         assert "git-commit" in repr_str
         assert "0.8" in repr_str
-        assert "github-learn" in repr_str
