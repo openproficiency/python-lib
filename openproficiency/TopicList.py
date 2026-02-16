@@ -113,8 +113,11 @@ class TopicList:
 
     @property
     def full_name(self) -> str:
-        """Get the full name of the TopicList in 'owner/name' format."""
-        return f"{self.owner}/{self.name}"
+        """Get the full name of the TopicList in 'owner/name@version' format."""
+        full_name = f"{self.owner}/{self.name}"
+        if self.version:
+            full_name += f"@{self.version}"
+        return full_name
 
     # Debugging
     def __repr__(self) -> str:
