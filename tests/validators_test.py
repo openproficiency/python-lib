@@ -296,10 +296,10 @@ class TestValidateHostname:
 
     # Valid hostnames
     def test_valid_single_word(self):
-        """Single lowercase word should be valid."""
+        """Simple domain name should be valid."""
 
         # Arrange
-        value = "github"
+        value = "example.com"
 
         # Act
         validate_hostname(value)
@@ -308,10 +308,10 @@ class TestValidateHostname:
         # No exception raised
 
     def test_valid_with_hyphen(self):
-        """Kebab-case hostname should be valid."""
+        """Kebab-case hostname with TLD should be valid."""
 
         # Arrange
-        value = "acme-corp"
+        value = "acme-corp.com"
 
         # Act
         validate_hostname(value)
@@ -505,7 +505,7 @@ class TestValidateHostname:
         """Leading hyphen should raise ValueError."""
 
         # Arrange
-        value = "-github"
+        value = "-example"
 
         # Act
         exception_raised = None
@@ -522,7 +522,7 @@ class TestValidateHostname:
         """Trailing hyphen should raise ValueError."""
 
         # Arrange
-        value = "github-"
+        value = "example-"
 
         # Act
         exception_raised = None

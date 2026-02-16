@@ -34,7 +34,7 @@ def validate_hostname(value: str) -> None:
     Validate that a string is a valid hostname or domain name.
 
     Pattern: lowercase alphanumeric characters with hyphens and dots as separators.
-    Examples: "github", "example.com", "sub.example.com"
+    Examples: "example.com", "sub.example.com"
 
     Args:
         value: The string to validate
@@ -45,13 +45,13 @@ def validate_hostname(value: str) -> None:
     if not value:
         raise ValueError("Value cannot be empty")
 
-    # Pattern: hostname components separated by dots
+    # Pattern: hostname components separated by dots (requires at least 2 components)
     # Each component: starts and ends with alphanumeric, can have hyphens between
     component_pattern = r"[a-z0-9]+(?:-[a-z0-9]+)*"
-    pattern = f"^{component_pattern}(?:\\.{component_pattern})*$"
+    pattern = f"^{component_pattern}(?:\\.{component_pattern})+$"
 
     if not re.match(pattern, value):
         raise ValueError(
             f"Value must be a valid hostname (lowercase alphanumeric with hyphens and dots). "
-            f"Got: '{value}'. Examples: 'github', 'example.com', 'acme-corp'"
+            f"Got: '{value}'. Examples: 'example.com','sub.example.com'"
         )
