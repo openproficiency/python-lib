@@ -14,7 +14,7 @@ class Topic:
         # Optional
         description: str = "",
         subtopics: List[Union[str, "Topic"]] = [],
-        pretopics: List[Union[str, "Topic"]] = []
+        pretopics: List[Union[str, "Topic"]] = [],
     ):
         # Required
         self.id = id
@@ -43,8 +43,7 @@ class Topic:
             self.subtopics.append(subtopic.id)
 
         else:
-            raise ValueError(
-                "Subtopic must be a string or a dictionary with an 'id' key.")
+            raise ValueError("Subtopic must be a string or a dictionary with an 'id' key.")
 
     def add_subtopics(self, subtopics: List[Union[str, "Topic"]]) -> None:
         """
@@ -67,8 +66,7 @@ class Topic:
         elif isinstance(pretopic, Topic):
             self.pretopics.append(pretopic.id)
         else:
-            raise ValueError(
-                "Pretopic must be a string or a dictionary with an 'id' key.")
+            raise ValueError("Pretopic must be a string or a dictionary with an 'id' key.")
 
     def add_pretopics(self, pretopics: List[Union[str, "Topic"]]) -> None:
         """
@@ -78,13 +76,13 @@ class Topic:
         for pretopic in pretopics:
             self.add_pretopic(pretopic)
 
-    def to_dict(self) -> dict:
+    def to_dict(self) -> dict[str, Union[str, List[str]]]:
         """Convert Topic to JSON-serializable dictionary."""
         return {
             "id": self.id,
             "description": self.description,
             "subtopics": self.subtopics,
-            "pretopics": self.pretopics
+            "pretopics": self.pretopics,
         }
 
     def to_json(self) -> str:

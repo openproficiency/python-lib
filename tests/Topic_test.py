@@ -36,7 +36,7 @@ class TestTopic:
             id=id,
             description=description,
             subtopics=subtopics,
-            pretopics=pretopics
+            pretopics=pretopics,
         )
 
         # Assert
@@ -66,7 +66,7 @@ class TestTopic:
         topic = Topic(id="git")
         subtopic = Topic(
             id="git-commit",
-            description="Saving changes to the Git history"
+            description="Saving changes to the Git history",
         )
 
         # Act
@@ -81,10 +81,7 @@ class TestTopic:
         # Arrange
         topic = Topic(id="git")
         subtopic1 = "git-commit"
-        subtopic2 = Topic(
-            id="git-branch",
-            description="Managing branches in Git"
-        )
+        subtopic2 = Topic(id="git-branch", description="Managing branches in Git")
         subtopics = [subtopic1, subtopic2]
 
         # Act
@@ -114,7 +111,7 @@ class TestTopic:
         topic = Topic(id="git")
         pretopic = Topic(
             id="version-control",
-            description="Managing changes to code over time"
+            description="Managing changes to code over time",
         )
 
         # Act
@@ -131,7 +128,7 @@ class TestTopic:
         pretopic1 = "version-control"
         pretopic2 = Topic(
             id="software-development",
-            description="The process of creating software"
+            description="The process of creating software",
         )
         pretopics = [pretopic1, pretopic2]
 
@@ -150,7 +147,7 @@ class TestTopic:
             id="git-merge",
             description="Combining branches in Git",
             subtopics=["git-branch", "git-commit"],
-            pretopics=["cli"]
+            pretopics=["cli"],
         )
 
         # Act
@@ -171,7 +168,7 @@ class TestTopic:
             id="git-merge",
             description="Combining branches in Git",
             subtopics=["git-branch", "git-commit"],
-            pretopics=["cli"]
+            pretopics=["cli"],
         )
 
         # Act

@@ -15,7 +15,7 @@ class TopicList:
         owner: str,
         name: str,
         # Optional
-        description: str = ""
+        description: str = "",
     ):
         # Required
         self.owner = owner
@@ -178,9 +178,7 @@ class TopicList:
                     # Check if the topic already exists
                     pretopic = topic_list.get_topic(pretopic_object)
                     if pretopic is None:
-                        pretopic = Topic(
-                            id=pretopic_object, description=current_child.description
-                        )
+                        pretopic = Topic(id=pretopic_object, description=current_child.description)
 
                 # Handle dictionary with id and optional nested pretopics
                 elif isinstance(pretopic_object, dict) and "id" in pretopic_object:
@@ -189,9 +187,7 @@ class TopicList:
                     if pretopic is None:
                         pretopic = Topic(
                             id=pretopic_object["id"],
-                            description=pretopic_object.get(
-                                "description", current_child.description
-                            ),
+                            description=pretopic_object.get("description", current_child.description),
                         )
 
                     # Queue nested pretopics for processing
@@ -206,7 +202,7 @@ class TopicList:
 
     def to_dict(self) -> dict:
         """
-        Export the TopicList to a JSON string.
+        Export the TopicList to a dictionary.
         """
 
         # Create dictionary

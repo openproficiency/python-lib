@@ -17,7 +17,7 @@ class TestTopicList:
         # Act
         topic_list = TopicList(
             owner=owner,
-            name=name
+            name=name,
         )
 
         # Assert
@@ -38,7 +38,7 @@ class TestTopicList:
         topic_list = TopicList(
             owner=owner,
             name=name,
-            description=description
+            description=description,
         )
 
         # Assert
@@ -53,7 +53,7 @@ class TestTopicList:
         # Arrange
         topic_list = TopicList(
             owner="github",
-            name="git"
+            name="git",
         )
         topic_id = "git-commit"
 
@@ -70,11 +70,11 @@ class TestTopicList:
         # Arrange
         topic_list = TopicList(
             owner="github",
-            name="git"
+            name="git",
         )
         topic1 = Topic(
             id="git-commit",
-            description="Storing changes to the Git history"
+            description="Storing changes to the Git history",
         )
 
         # Act
@@ -90,7 +90,7 @@ class TestTopicList:
         # Arrange
         topic_list = TopicList(
             owner="github",
-            name="git"
+            name="git",
         )
         topic = Topic(id="git-commit")
         topic_list.topics[topic.id] = topic
@@ -106,10 +106,7 @@ class TestTopicList:
         """Test retrieving a topic that does not exist in the list."""
 
         # Arrange
-        topic_list = TopicList(
-            owner="github",
-            name="git"
-        )
+        topic_list = TopicList(owner="github", name="git",)
         topic = Topic(id="git-commit")
         topic_list.topics[topic.id] = topic
 
@@ -126,10 +123,7 @@ class TestTopicList:
         # Arrange
         owner = "github"
         name = "git"
-        topic_list = TopicList(
-            owner=owner,
-            name=name
-        )
+        topic_list = TopicList(owner=owner, name=name,)
 
         # Act
         full_name = topic_list.full_name
@@ -203,7 +197,7 @@ class TestTopicList:
                     "description": "Parallel versions of work",
                     "pretopic": ["git-commit"]
                 },
-                
+
                 "actions": {
                     "description": "Storing changes to the Git history",
                     "subtopics": ["git-branch"]
@@ -244,12 +238,12 @@ class TestTopicList:
             "name": "github",
             "description": "Features of the GitHub platform",
             "topics": {
-                
+
                 "repositories": {
                     "description": "Versioning code with Git repositories",
                     "subtopics": [
                         "commit-history",
-                        { 
+                        {
                             "id": "community-files",
                             "description": "Essential files for repository community health",
                             "subtopics": [
@@ -290,7 +284,7 @@ class TestTopicList:
             "name": "github-features",
             "description": "Features of the GitHub platform",
             "topics": {
-                
+
                 "actions": {
                     "description": "Storing changes to the Git history",
                     "pretopics": ["yaml"]
@@ -336,12 +330,12 @@ class TestTopicList:
             "name": "github-features",
             "description": "Features of the GitHub platform",
             "topics": {
-                
+
                 "repositories": {
                     "description": "Versioning code with Git repositories",
                     "pretopics": [
                         "git-commit",
-                        { 
+                        {
                             "id": "git-merge",
                             "description": "Essential files for repository community health",
                             "pretopics": [
@@ -383,18 +377,22 @@ class TestTopicList:
             name="github-features",
             description="Features of the GitHub platform",
         )
-        topic_list.add_topic(Topic(
-            id="actions",
-            description="Storing changes to the Git history",
-            subtopics=["automation"],
-            pretopics=["yaml"]
-        ))
-        topic_list.add_topic(Topic(
-            id="repositories",
-            description="Versioning code with Git repositories",
-            subtopics=["git-clone"],
-            pretopics=["git-push"]
-        ))
+        topic_list.add_topic(
+            Topic(
+                id="actions",
+                description="Storing changes to the Git history",
+                subtopics=["automation"],
+                pretopics=["yaml"],
+            )
+        )
+        topic_list.add_topic(
+            Topic(
+                id="repositories",
+                description="Versioning code with Git repositories",
+                subtopics=["git-clone"],
+                pretopics=["git-push"],
+            )
+        )
 
         # Act
         data = topic_list.to_dict()
@@ -425,18 +423,22 @@ class TestTopicList:
             name="github-features",
             description="Features of the GitHub platform",
         )
-        topic_list.add_topic(Topic(
-            id="actions",
-            description="Storing changes to the Git history",
-            subtopics=["automation"],
-            pretopics=["yaml"]
-        ))
-        topic_list.add_topic(Topic(
-            id="repositories",
-            description="Versioning code with Git repositories",
-            subtopics=["git-clone"],
-            pretopics=["git-push"]
-        ))
+        topic_list.add_topic(
+            Topic(
+                id="actions",
+                description="Storing changes to the Git history",
+                subtopics=["automation"],
+                pretopics=["yaml"],
+            )
+        )
+        topic_list.add_topic(
+            Topic(
+                id="repositories",
+                description="Versioning code with Git repositories",
+                subtopics=["git-clone"],
+                pretopics=["git-push"],
+            )
+        )
 
         # Act
         json_data = topic_list.to_json()
