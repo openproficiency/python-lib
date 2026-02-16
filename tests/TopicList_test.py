@@ -106,7 +106,10 @@ class TestTopicList:
         """Test retrieving a topic that does not exist in the list."""
 
         # Arrange
-        topic_list = TopicList(owner="github", name="git",)
+        topic_list = TopicList(
+            owner="github",
+            name="git",
+        )
         topic = Topic(id="git-commit")
         topic_list.topics[topic.id] = topic
 
@@ -123,7 +126,10 @@ class TestTopicList:
         # Arrange
         owner = "github"
         name = "git"
-        topic_list = TopicList(owner=owner, name=name,)
+        topic_list = TopicList(
+            owner=owner,
+            name=name,
+        )
 
         # Act
         full_name = topic_list.full_name
