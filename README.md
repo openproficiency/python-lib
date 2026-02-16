@@ -26,8 +26,8 @@ from openproficiency import Topic
 topic_arithmetic = Topic(
     id="arithmetic",
     description="Basic operations for numeric calculations",
-    subtopics=["addition", "subtraction"]
-    pretopics=['writing']
+    subtopics=["addition", "subtraction"],
+    pretopics=["numbers"]
 )
 ```
 
@@ -72,7 +72,7 @@ t_arithmetic = Topic(
         "addition",
         "subtraction",
         "multiplication",
-        "division
+        "division"
     ]
 )
 topic_list.add_topic(t_arithmetic)
@@ -86,7 +86,7 @@ t_algebra = Topic(
         "single-variable-equations",
         "multiple-variable-equations"
     ],
-    pretopics=[ "arithmetic" ]
+    pretopics=["arithmetic"]
 )
 ```
 
@@ -95,6 +95,8 @@ t_algebra = Topic(
 A **Proficiency Score** represents a person's level of proficiency in a specific topic.
 
 ```python
+from openproficiency import ProficiencyScore, ProficiencyScoreName
+
 proficiency_score = ProficiencyScore(
     topic_id="addition",
     score=ProficiencyScoreName.PROFICIENT
@@ -106,6 +108,8 @@ proficiency_score = ProficiencyScore(
 All score are internally numeric from 0.0 to 1.0, even if set using the score name (above).
 
 ```python
+from openproficiency import ProficiencyScore
+
 proficiency_score = ProficiencyScore(
     topic_id="arithmetic",
     score=0.8 # Same as 'ProficiencyScoreName.PROFICIENT'
@@ -121,10 +125,10 @@ from openproficiency import TranscriptEntry
 
 # Create a transcript entry
 entry = TranscriptEntry(
-    user_id="john-doe",
+    user_id="first.last@my-email.com",
     topic_id="arithmetic",
     score=0.9,
-    issuer="university-of-example"
+    issuer="example.com"
 )
 
 # Access the transcript entry information
