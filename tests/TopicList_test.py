@@ -1,6 +1,7 @@
 """Tests for the TopicList class."""
 
 import json
+from datetime import datetime
 from openproficiency import Topic, TopicList
 
 
@@ -26,8 +27,8 @@ class TestTopicList:
         assert topic_list.topics == {}
         assert topic_list.dependencies == {}
 
-    def test_init_optional_params(self):
-        """Create a topic list with optional details."""
+    def test_init_with_description(self):
+        """Create a topic list with description field."""
 
         # Arrange
         owner = "github"
@@ -45,6 +46,88 @@ class TestTopicList:
         assert topic_list.owner == owner
         assert topic_list.name == name
         assert topic_list.description == description
+
+    def test_init_with_version(self):
+        """Create a topic list with custom version."""
+
+        # Arrange
+        owner = "github"
+        name = "github"
+        version = "2.1.0"
+
+        # Act
+        topic_list = TopicList(
+            owner=owner,
+            name=name,
+            version=version,
+        )
+
+        # Assert
+        assert topic_list.version == version
+
+    def test_init_with_timestamp(self):
+        """Create a topic list with custom timestamp."""
+
+        # Arrange
+        owner = "github"
+        name = "github"
+        timestamp = "2025-01-15T10:30:00+00:00"
+
+        # Act
+        topic_list = TopicList(
+            owner=owner,
+            name=name,
+            timestamp=timestamp,
+        )
+
+        # Assert
+        assert topic_list.timestamp == datetime.fromisoformat(timestamp)
+
+    def test_init_with_certificate(self):
+        """Create a topic list with custom certificate."""
+
+        # Arrange
+        owner = "github"
+        name = "github"
+        certificate = "cert-12345"
+
+        # Act
+        topic_list = TopicList(
+            owner=owner,
+            name=name,
+            certificate=certificate,
+        )
+
+        # Assert
+        assert topic_list.certificate == certificate
+        print("Warning: Certificate format is currently not validated.")
+
+    def test_init_timestamp_defaults_to_current_utc(self):
+        """Verify timestamp defaults to current UTC when not provided."""
+
+        # Act
+        topic_list = TopicList(
+            owner="github",
+            name="github",
+        )
+
+        # Assert
+        assert topic_list.timestamp is not None
+        assert isinstance(topic_list.timestamp, datetime)
+        # Should have UTC timezone info
+        assert topic_list.timestamp.tzinfo is not None
+
+    def test_version_default(self):
+        """Verify version defaults to None."""
+
+        # Act
+        topic_list = TopicList(
+            owner="github",
+            name="github",
+        )
+
+        # Assert
+        assert topic_list.version is None
 
     # Methods
     def test_add_topic_string(self):
@@ -137,6 +220,95 @@ class TestTopicList:
         # Assert
         assert full_name == "github/git"
 
+    def test_version_setter_valid_format(self):
+        """Test setting version with valid semantic versioning."""
+
+        # Arrange
+        topic_list = TopicList(
+            owner="github",
+            name="github",
+        )
+
+        # Act
+        topic_list.version = "3.2.1"
+
+        # Assert
+        assert topic_list.version == "3.2.1"
+
+    def test_version_setter_invalid_format_missing_patch(self):
+        """Test setting version with invalid format (missing patch number)."""
+
+        # Arrange
+        topic_list = TopicList(
+            owner="github",
+            name="github",
+        )
+
+        # Act & Assert
+        try:
+            topic_list.version = "3.2"
+            assert False, "Should have raised ValueError"
+        except ValueError as e:
+            assert "Invalid version format" in str(e)
+            assert "Must be semantic versioning" in str(e)
+
+    def test_version_setter_invalid_format_extra_component(self):
+        """Test setting version with invalid format (too many components)."""
+
+        # Arrange
+        topic_list = TopicList(
+            owner="github",
+            name="github",
+        )
+
+        # Act
+        result = None
+        try:
+            topic_list.version = "3.2.1.5"
+            assert False, "Should have raised ValueError"
+        except Exception as e:
+            result = e
+
+        # Assert
+        assert isinstance(result, ValueError)
+        assert "Invalid" in str(result)
+
+    def test_version_setter_invalid_format_non_numeric(self):
+        """Test setting version with invalid format (non-numeric components)."""
+
+        # Arrange
+        topic_list = TopicList(
+            owner="github",
+            name="github",
+        )
+
+        # Act
+        result = None
+        try:
+            topic_list.version = "v3.2.1"
+            assert False, "Should have raised ValueError"
+        except Exception as e:
+            result = e
+
+        # Assert
+        assert isinstance(result, ValueError)
+        assert "Invalid" in str(result)
+
+    def test_version_zero_values(self):
+        """Test setting version with zero values."""
+
+        # Arrange
+        topic_list = TopicList(
+            owner="github",
+            name="github",
+        )
+
+        # Act
+        topic_list.version = "0.0.0"
+
+        # Assert
+        assert topic_list.version == "0.0.0"
+
     # Methods - Class
     def test_load_from_json_basic_info(self):
         """Load a list with only list info."""
@@ -145,8 +317,7 @@ class TestTopicList:
         json_data = """
         {
             "owner": "github",
-            "name": "github-features",
-            "description": "Features of the GitHub platform"
+            "name": "github-features"
         }
         """
 
@@ -156,7 +327,29 @@ class TestTopicList:
         # Assert - list details
         assert topic_list.owner == "github"
         assert topic_list.name == "github-features"
-        assert topic_list.description == "Features of the GitHub platform"
+
+    def test_load_from_json_optional_inputs(self):
+        """Load a list with version, timestamp, and certificate fields."""
+
+        # Arrange
+        json_data = """
+        {
+            "owner": "github",
+            "name": "github-features",
+            "description": "Features of the GitHub platform",
+            "version": "2.3.1",
+            "timestamp": "2025-01-15T10:30:00+00:00",
+            "certificate": "cert-abc123"
+        }
+        """
+
+        # Act
+        topic_list = TopicList.from_json(json_data)
+
+        # Assert
+        assert topic_list.version == "2.3.1"
+        assert topic_list.timestamp == datetime.fromisoformat("2025-01-15T10:30:00+00:00")
+        assert topic_list.certificate == "cert-abc123"
 
     def test_load_from_json_simple(self):
         """Load a list with only top-level topics."""
@@ -419,6 +612,69 @@ class TestTopicList:
         assert data["topics"]["repositories"]["description"] == "Versioning code with Git repositories"
         assert "git-clone" in data["topics"]["repositories"]["subtopics"]
         assert "git-push" in data["topics"]["repositories"]["pretopics"]
+
+    def test_to_dict(self):
+        """Test that to_dict excludes optional fields if set to None."""
+
+        # Arrange
+        topic_list = TopicList(
+            owner="github",
+            name="github-features",
+        )
+
+        # Act
+        data = topic_list.to_dict()
+
+        # Assert
+        assert "description" not in data
+        assert "version" not in data
+        assert "certificate" not in data
+
+    def test_to_dict_with_optionals(self):
+        """Test that to_dict includes optional fields."""
+
+        # Arrange
+        topic_list = TopicList(
+            owner="github",
+            name="github-features",
+            description="Features of the GitHub platform",
+            version="2.1.0",
+            timestamp="2025-01-15T10:30:00+00:00",
+            certificate="cert-xyz789",
+        )
+
+        # Act
+        data = topic_list.to_dict()
+
+        # Assert
+        assert data["version"] == "2.1.0"
+        assert data["timestamp"] == "2025-01-15T10:30:00+00:00"
+        assert data["certificate"] == "cert-xyz789"
+
+    def test_json_roundtrip_integrity(self):
+        """Test that JSON export/import preserves values."""
+
+        # Arrange
+        original = TopicList(
+            owner="github",
+            name="github-features",
+            description="Test description",
+            version="1.2.3",
+            timestamp="2025-02-16T14:25:00+00:00",
+            certificate="cert-example",
+        )
+
+        # Act
+        json_str = original.to_json()
+        restored = TopicList.from_json(json_str)
+
+        # Assert
+        assert restored.owner == original.owner
+        assert restored.name == original.name
+        assert restored.description == original.description
+        assert restored.version == original.version
+        assert restored.timestamp == original.timestamp
+        assert restored.certificate == original.certificate
 
     def test_to_json_simple(self):
         """Exporting a simple TopicList to JSON string."""
