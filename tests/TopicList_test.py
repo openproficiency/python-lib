@@ -12,8 +12,8 @@ class TestTopicList:
         """Create a topic list with required."""
 
         # Arrange
-        owner = "github"
-        name = "github"
+        owner = "example.com"
+        name = "example-topics-list"
 
         # Act
         topic_list = TopicList(
@@ -31,8 +31,8 @@ class TestTopicList:
         """Create a topic list with description field."""
 
         # Arrange
-        owner = "github"
-        name = "github"
+        owner = "example.com"
+        name = "example-topics-list"
         description = "Features of the GitHub platform"
 
         # Act
@@ -51,8 +51,8 @@ class TestTopicList:
         """Create a topic list with custom version."""
 
         # Arrange
-        owner = "github"
-        name = "github"
+        owner = "example.com"
+        name = "example-topics-list"
         version = "2.1.0"
 
         # Act
@@ -69,8 +69,8 @@ class TestTopicList:
         """Create a topic list with custom timestamp."""
 
         # Arrange
-        owner = "github"
-        name = "github"
+        owner = "example.com"
+        name = "example-topics-list"
         timestamp = "2025-01-15T10:30:00+00:00"
 
         # Act
@@ -87,8 +87,8 @@ class TestTopicList:
         """Create a topic list with custom certificate."""
 
         # Arrange
-        owner = "github"
-        name = "github"
+        owner = "example.com"
+        name = "example-topics-list"
         certificate = "cert-12345"
 
         # Act
@@ -107,8 +107,8 @@ class TestTopicList:
 
         # Act
         topic_list = TopicList(
-            owner="github",
-            name="github",
+            owner="example.com",
+            name="example",
         )
 
         # Assert
@@ -122,8 +122,8 @@ class TestTopicList:
 
         # Act
         topic_list = TopicList(
-            owner="github",
-            name="github",
+            owner="example.com",
+            name="example",
         )
 
         # Assert
@@ -135,8 +135,8 @@ class TestTopicList:
 
         # Arrange
         topic_list = TopicList(
-            owner="github",
-            name="git",
+            owner="example.com",
+            name="example-topics-list",
         )
         topic_id = "git-commit"
 
@@ -152,8 +152,8 @@ class TestTopicList:
 
         # Arrange
         topic_list = TopicList(
-            owner="github",
-            name="git",
+            owner="example.com",
+            name="example-topics-list",
         )
         topic1 = Topic(
             id="git-commit",
@@ -172,8 +172,8 @@ class TestTopicList:
 
         # Arrange
         topic_list = TopicList(
-            owner="github",
-            name="git",
+            owner="example.com",
+            name="example-topics-list",
         )
         topic = Topic(id="git-commit")
         topic_list.topics[topic.id] = topic
@@ -190,8 +190,8 @@ class TestTopicList:
 
         # Arrange
         topic_list = TopicList(
-            owner="github",
-            name="git",
+            owner="example.com",
+            name="example-topics-list",
         )
         topic = Topic(id="git-commit")
         topic_list.topics[topic.id] = topic
@@ -207,8 +207,8 @@ class TestTopicList:
         """Test getting the full name of the topic list."""
 
         # Arrange
-        owner = "github"
-        name = "git"
+        owner = "example.com"
+        name = "example-topic-list"
         topic_list = TopicList(
             owner=owner,
             name=name,
@@ -218,15 +218,15 @@ class TestTopicList:
         full_name = topic_list.full_name
 
         # Assert
-        assert full_name == "github/git"
+        assert full_name == "example.com/example-topic-list"
 
     def test_version_setter_valid_format(self):
         """Test setting version with valid semantic versioning."""
 
         # Arrange
         topic_list = TopicList(
-            owner="github",
-            name="github",
+            owner="example.com",
+            name="example",
         )
 
         # Act
@@ -240,8 +240,8 @@ class TestTopicList:
 
         # Arrange
         topic_list = TopicList(
-            owner="github",
-            name="github",
+            owner="example.com",
+            name="example",
         )
 
         # Act & Assert
@@ -257,8 +257,8 @@ class TestTopicList:
 
         # Arrange
         topic_list = TopicList(
-            owner="github",
-            name="github",
+            owner="example.com",
+            name="example",
         )
 
         # Act
@@ -278,8 +278,8 @@ class TestTopicList:
 
         # Arrange
         topic_list = TopicList(
-            owner="github",
-            name="github",
+            owner="example.com",
+            name="example",
         )
 
         # Act
@@ -299,8 +299,8 @@ class TestTopicList:
 
         # Arrange
         topic_list = TopicList(
-            owner="github",
-            name="github",
+            owner="example.com",
+            name="example",
         )
 
         # Act
@@ -316,8 +316,8 @@ class TestTopicList:
         # Arrange
         json_data = """
         {
-            "owner": "github",
-            "name": "github-features"
+            "owner": "example.com",
+            "name": "example-features"
         }
         """
 
@@ -325,8 +325,8 @@ class TestTopicList:
         topic_list = TopicList.from_json(json_data)
 
         # Assert - list details
-        assert topic_list.owner == "github"
-        assert topic_list.name == "github-features"
+        assert topic_list.owner == "example.com"
+        assert topic_list.name == "example-features"
 
     def test_load_from_json_optional_inputs(self):
         """Load a list with version, timestamp, and certificate fields."""
@@ -334,8 +334,8 @@ class TestTopicList:
         # Arrange
         json_data = """
         {
-            "owner": "github",
-            "name": "github-features",
+            "owner": "example.com",
+            "name": "example-features",
             "description": "Features of the GitHub platform",
             "version": "2.3.1",
             "timestamp": "2025-01-15T10:30:00+00:00",
@@ -357,8 +357,8 @@ class TestTopicList:
         # Arrange
         json_data = """
         {
-            "owner": "github",
-            "name": "github-features",
+            "owner": "example.com",
+            "name": "example-features",
             "description": "Features of the GitHub platform",
             "topics": {
                 "actions": {
@@ -387,8 +387,8 @@ class TestTopicList:
         # Arrange
         json_data = """
         {
-            "owner": "github",
-            "name": "github-features",
+            "owner": "example.com",
+            "name": "example-features",
             "description": "Features of the GitHub platform",
             "topics": {
 
@@ -433,8 +433,8 @@ class TestTopicList:
         # Arrange
         json_data = """
         {
-            "owner": "github",
-            "name": "github",
+            "owner": "example.com",
+            "name": "example",
             "description": "Features of the GitHub platform",
             "topics": {
 
@@ -479,8 +479,8 @@ class TestTopicList:
         # Arrange
         json_data = """
         {
-            "owner": "github",
-            "name": "github-features",
+            "owner": "example.com",
+            "name": "example-features",
             "description": "Features of the GitHub platform",
             "topics": {
 
@@ -525,8 +525,8 @@ class TestTopicList:
         # Arrange
         json_data = """
         {
-            "owner": "github",
-            "name": "github-features",
+            "owner": "example.com",
+            "name": "example-features",
             "description": "Features of the GitHub platform",
             "topics": {
 
@@ -572,8 +572,8 @@ class TestTopicList:
 
         # Arrange
         topic_list = TopicList(
-            owner="github",
-            name="github-features",
+            owner="example.com",
+            name="example-features",
             description="Features of the GitHub platform",
         )
         topic_list.add_topic(
@@ -597,8 +597,8 @@ class TestTopicList:
         data = topic_list.to_dict()
 
         # Assert - List Info
-        assert data["owner"] == "github"
-        assert data["name"] == "github-features"
+        assert data["owner"] == "example.com"
+        assert data["name"] == "example-features"
         assert data["description"] == "Features of the GitHub platform"
 
         # Assert - Topic 1
@@ -618,8 +618,8 @@ class TestTopicList:
 
         # Arrange
         topic_list = TopicList(
-            owner="github",
-            name="github-features",
+            owner="example.com",
+            name="example-features",
         )
 
         # Act
@@ -635,8 +635,8 @@ class TestTopicList:
 
         # Arrange
         topic_list = TopicList(
-            owner="github",
-            name="github-features",
+            owner="example.com",
+            name="example-features",
             description="Features of the GitHub platform",
             version="2.1.0",
             timestamp="2025-01-15T10:30:00+00:00",
@@ -656,8 +656,8 @@ class TestTopicList:
 
         # Arrange
         original = TopicList(
-            owner="github",
-            name="github-features",
+            owner="example.com",
+            name="example-features",
             description="Test description",
             version="1.2.3",
             timestamp="2025-02-16T14:25:00+00:00",
@@ -681,8 +681,8 @@ class TestTopicList:
 
         # Arrange
         topic_list = TopicList(
-            owner="github",
-            name="github-features",
+            owner="example.com",
+            name="example-features",
             description="Features of the GitHub platform",
         )
         topic_list.add_topic(
@@ -707,8 +707,8 @@ class TestTopicList:
         data = json.loads(json_data)
 
         # Assert - List Info
-        assert data["owner"] == "github"
-        assert data["name"] == "github-features"
+        assert data["owner"] == "example.com"
+        assert data["name"] == "example-features"
         assert data["description"] == "Features of the GitHub platform"
 
         # Assert - Topic 1
@@ -759,7 +759,10 @@ class TestTopicList:
         """Test string representation of TopicList."""
 
         # Arrange
-        topic_list = TopicList(owner="github", name="git")
+        topic_list = TopicList(
+            owner="example.com",
+            name="example-topics-list",
+        )
         topic_list.add_topic("git-commit")
         topic_list.add_topic("git-push")
 
@@ -768,6 +771,383 @@ class TestTopicList:
 
         # Assert
         assert "TopicList" in repr_str
-        assert "github" in repr_str
-        assert "git" in repr_str
+        assert "example.com" in repr_str
+        assert "example-topics-list" in repr_str
         assert "topics_count=2" in repr_str
+
+
+class TestTopicListIdentifierValidation:
+    """Tests for TopicList name and owner validation."""
+
+    # Valid TopicList names
+    def test_valid_name_single_word(self):
+        """Test that single word lowercase names are valid."""
+
+        # Arrange
+        owner = "example.com"
+        name = "example-topic-list"
+
+        # Act
+        topic_list = TopicList(owner=owner, name=name)
+
+        # Assert
+        assert topic_list.name == name
+
+    def test_valid_name_kebab_case(self):
+        """Test that kebab-case names are valid."""
+
+        # Arrange
+        owner = "example.com"
+        name = "topic-list"
+
+        # Act
+        topic_list = TopicList(owner=owner, name=name)
+
+        # Assert
+        assert topic_list.name == name
+
+    def test_valid_name_with_numbers(self):
+        """Test that kebab-case names with numbers are valid."""
+
+        # Arrange
+        owner = "example.com"
+        name = "python-3"
+
+        # Act
+        topic_list = TopicList(owner=owner, name=name)
+
+        # Assert
+        assert topic_list.name == name
+
+    # Invalid TopicList names - construction time
+    def test_invalid_name_uppercase_construction(self):
+        """Test that uppercase letters in name are rejected during construction."""
+
+        # Arrange
+        owner = "example.com"
+        invalid_name = "GitHub"
+
+        # Act
+        result = None
+        try:
+            TopicList(owner=owner, name=invalid_name)
+        except Exception as e:
+            result = e
+
+        # Assert
+        assert isinstance(result, ValueError)
+        assert "kebab-case" in str(result)
+
+    def test_invalid_name_underscore_construction(self):
+        """Test that underscores in name are rejected during construction."""
+
+        # Arrange
+        owner = "example.com"
+        invalid_name = "topic_list"
+
+        # Act
+        result = None
+        try:
+            TopicList(owner=owner, name=invalid_name)
+        except Exception as e:
+            result = e
+
+        # Assert
+        assert isinstance(result, ValueError)
+        assert "kebab-case" in str(result)
+
+    def test_invalid_name_double_hyphen_construction(self):
+        """Test that double hyphens in name are rejected during construction."""
+
+        # Arrange
+        owner = "example.com"
+        invalid_name = "topic--list"
+
+        # Act
+        result = None
+        try:
+            TopicList(owner=owner, name=invalid_name)
+        except Exception as e:
+            result = e
+
+        # Assert
+        assert isinstance(result, ValueError)
+        assert "kebab-case" in str(result)
+
+    def test_invalid_name_leading_hyphen_construction(self):
+        """Test that leading hyphens in name are rejected during construction."""
+
+        # Arrange
+        owner = "example.com"
+        invalid_name = "-topic"
+
+        # Act
+        result = None
+        try:
+            TopicList(owner=owner, name=invalid_name)
+        except Exception as e:
+            result = e
+
+        # Assert
+        assert isinstance(result, ValueError)
+        assert "kebab-case" in str(result)
+
+    def test_invalid_name_trailing_hyphen_construction(self):
+        """Test that trailing hyphens in name are rejected during construction."""
+
+        # Arrange
+        owner = "example.com"
+        invalid_name = "topic-"
+
+        # Act
+        result = None
+        try:
+            TopicList(owner=owner, name=invalid_name)
+        except Exception as e:
+            result = e
+
+        # Assert
+        assert isinstance(result, ValueError)
+        assert "kebab-case" in str(result)
+
+    def test_invalid_name_empty_construction(self):
+        """Test that empty name is rejected during construction."""
+
+        # Arrange
+        owner = "example.com"
+        invalid_name = ""
+
+        # Act
+        result = None
+        try:
+            TopicList(owner=owner, name=invalid_name)
+        except Exception as e:
+            result = e
+
+        # Assert
+        assert isinstance(result, ValueError)
+        assert "cannot be empty" in str(result)
+
+    # Invalid TopicList names - property update
+    def test_invalid_name_update(self):
+        """Test that invalid names are rejected during property update."""
+
+        # Arrange
+        topic_list = TopicList(
+            owner="example.com",
+            name="valid-name",
+        )
+        invalid_name = "Invalid_Name"
+
+        # Act
+        result = None
+        try:
+            topic_list.name = invalid_name
+        except Exception as e:
+            result = e
+
+        # Assert
+        assert isinstance(result, ValueError)
+        assert "kebab-case" in str(result)
+
+    # Valid owners
+    def test_valid_owner_single_word(self):
+        """Test that single word lowercase owners are valid."""
+
+        # Arrange
+        owner = "example.com"
+        name = "example-topic-list"
+
+        # Act
+        topic_list = TopicList(owner=owner, name=name)
+
+        # Assert
+        assert topic_list.owner == owner
+
+    def test_valid_owner_with_hyphen(self):
+        """Test that kebab-case owners are valid."""
+
+        # Arrange
+        owner = "acme-corp.com"
+        name = "example-topic-list"
+
+        # Act
+        topic_list = TopicList(owner=owner, name=name)
+
+        # Assert
+        assert topic_list.owner == owner
+
+    def test_valid_owner_domain(self):
+        """Test that domain-style owners are valid."""
+
+        # Arrange
+        owner = "example.com"
+        name = "example-topic-list"
+
+        # Act
+        topic_list = TopicList(owner=owner, name=name)
+
+        # Assert
+        assert topic_list.owner == owner
+
+    def test_valid_owner_subdomain(self):
+        """Test that subdomain-style owners are valid."""
+
+        # Arrange
+        owner = "sub.example.com"
+        name = "example-topic-list"
+
+        # Act
+        topic_list = TopicList(owner=owner, name=name)
+
+        # Assert
+        assert topic_list.owner == owner
+
+    # Invalid owners - construction time
+    def test_invalid_owner_uppercase_construction(self):
+        """Test that uppercase letters in owner are rejected during construction."""
+
+        # Arrange
+        invalid_owner = "GitHub"
+        name = "example-topic-list"
+
+        # Act
+        result = None
+        try:
+            TopicList(owner=invalid_owner, name=name)
+        except Exception as e:
+            result = e
+
+        # Assert
+        assert isinstance(result, ValueError)
+        assert "hostname" in str(result)
+
+    def test_invalid_owner_underscore_construction(self):
+        """Test that underscores in owner are rejected during construction."""
+
+        # Arrange
+        invalid_owner = "example_org"
+        name = "example-topic-list"
+
+        # Act
+        result = None
+        try:
+            TopicList(owner=invalid_owner, name=name)
+        except Exception as e:
+            result = e
+
+        # Assert
+        assert isinstance(result, ValueError)
+        assert "hostname" in str(result)
+
+    def test_invalid_owner_leading_hyphen_construction(self):
+        """Test that leading hyphens in owner are rejected during construction."""
+
+        # Arrange
+        invalid_owner = "-example"
+        name = "example-topic-list"
+
+        # Act
+        result = None
+        try:
+            TopicList(owner=invalid_owner, name=name)
+        except Exception as e:
+            result = e
+
+        # Assert
+        assert isinstance(result, ValueError)
+        assert "hostname" in str(result)
+
+    def test_invalid_owner_trailing_hyphen_construction(self):
+        """Test that trailing hyphens in owner are rejected during construction."""
+
+        # Arrange
+        invalid_owner = "example-"
+        name = "example-topic-list"
+
+        # Act
+        result = None
+        try:
+            TopicList(owner=invalid_owner, name=name)
+        except Exception as e:
+            result = e
+
+        # Assert
+        assert isinstance(result, ValueError)
+        assert "hostname" in str(result)
+
+    def test_invalid_owner_leading_dot_construction(self):
+        """Test that leading dots in owner are rejected during construction."""
+
+        # Arrange
+        invalid_owner = ".example.com"
+        name = "example-topic-list"
+
+        # Act
+        result = None
+        try:
+            TopicList(owner=invalid_owner, name=name)
+        except Exception as e:
+            result = e
+
+        # Assert
+        assert isinstance(result, ValueError)
+        assert "hostname" in str(result)
+
+    def test_invalid_owner_trailing_dot_construction(self):
+        """Test that trailing dots in owner are rejected during construction."""
+
+        # Arrange
+        invalid_owner = "example.com."
+        name = "example-topic-list"
+
+        # Act
+        result = None
+        try:
+            TopicList(owner=invalid_owner, name=name)
+        except Exception as e:
+            result = e
+
+        # Assert
+        assert isinstance(result, ValueError)
+        assert "hostname" in str(result)
+
+    def test_invalid_owner_empty_construction(self):
+        """Test that empty owner is rejected during construction."""
+
+        # Arrange
+        invalid_owner = ""
+        name = "example-topic-list"
+
+        # Act
+        result = None
+        try:
+            TopicList(owner=invalid_owner, name=name)
+        except Exception as e:
+            result = e
+
+        # Assert
+        assert isinstance(result, ValueError)
+        assert "cannot be empty" in str(result)
+
+    # Invalid owners - property update
+    def test_invalid_owner_update(self):
+        """Test that invalid owners are rejected during property update."""
+
+        # Arrange
+        topic_list = TopicList(
+            owner="example.com",
+            name="example-topics-list",
+        )
+        invalid_owner = "Invalid_Owner"
+
+        # Act
+        result = None
+        try:
+            topic_list.owner = invalid_owner
+        except Exception as e:
+            result = e
+
+        # Assert
+        assert isinstance(result, ValueError)
+        assert "hostname" in str(result)

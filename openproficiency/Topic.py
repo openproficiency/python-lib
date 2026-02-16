@@ -2,6 +2,7 @@
 
 import json
 from typing import List, Union
+from .validators import validate_kebab_case
 
 
 class Topic:
@@ -27,6 +28,18 @@ class Topic:
         # Process initial subtopics and pretopics
         self.add_subtopics(subtopics)
         self.add_pretopics(pretopics)
+
+    # Properties
+    @property
+    def id(self) -> str:
+        """Get the topic ID."""
+        return self._id
+
+    @id.setter
+    def id(self, value: str) -> None:
+        """Set the topic ID. kebab-case"""
+        validate_kebab_case(value)
+        self._id = value
 
     # Methods
     def add_subtopic(self, subtopic: Union[str, "Topic"]) -> None:

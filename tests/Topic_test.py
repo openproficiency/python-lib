@@ -232,3 +232,213 @@ class TestTopic:
         assert "git" in repr_str
         assert "Git version control" in repr_str
         assert "Topic" in repr_str
+
+
+class TestTopicIdentifierValidation:
+    """Tests for Topic ID kebab-case validation."""
+
+    # Valid identifiers
+    def test_valid_single_word(self):
+        """Test that single word lowercase IDs are valid."""
+
+        # Arrange
+        id = "topic"
+
+        # Act
+        topic = Topic(id=id)
+
+        # Assert
+        assert topic.id == id
+
+    def test_valid_kebab_case(self):
+        """Test that kebab-case IDs are valid."""
+
+        # Arrange
+        id = "topic-id"
+
+        # Act
+        topic = Topic(id=id)
+
+        # Assert
+        assert topic.id == id
+
+    def test_valid_with_numbers(self):
+        """Test that kebab-case with numbers is valid."""
+
+        # Arrange
+        id = "math-level-1"
+
+        # Act
+        topic = Topic(id=id)
+
+        # Assert
+        assert topic.id == id
+
+    def test_valid_multiple_hyphens(self):
+        """Test that multiple hyphen-separated parts are valid."""
+
+        # Arrange
+        id = "multi-part-topic-name"
+
+        # Act
+        topic = Topic(id=id)
+
+        # Assert
+        assert topic.id == id
+
+    # Invalid identifiers - construction time
+    def test_invalid_uppercase_construction(self):
+        """Test that uppercase letters are rejected during construction."""
+
+        # Arrange
+        invalid_id = "Topic"
+
+        # Act
+        result = None
+        try:
+            Topic(id=invalid_id)
+        except Exception as e:
+            result = e
+
+        # Assert
+        assert isinstance(result, ValueError)
+        assert "kebab-case" in str(result)
+
+    def test_invalid_mixed_case_construction(self):
+        """Test that mixed case is rejected during construction."""
+
+        # Arrange
+        invalid_id = "Topic-Id"
+
+        # Act
+        result = None
+        try:
+            Topic(id=invalid_id)
+        except Exception as e:
+            result = e
+
+        # Assert
+        assert isinstance(result, ValueError)
+        assert "kebab-case" in str(result)
+
+    def test_invalid_underscore_construction(self):
+        """Test that underscores are rejected during construction."""
+
+        # Arrange
+        invalid_id = "topic_id"
+
+        # Act
+        result = None
+        try:
+            Topic(id=invalid_id)
+        except Exception as e:
+            result = e
+
+        # Assert
+        assert isinstance(result, ValueError)
+        assert "kebab-case" in str(result)
+
+    def test_invalid_double_hyphen_construction(self):
+        """Test that double hyphens are rejected during construction."""
+
+        # Arrange
+        invalid_id = "topic--id"
+
+        # Act
+        result = None
+        try:
+            Topic(id=invalid_id)
+        except Exception as e:
+            result = e
+
+        # Assert
+        assert isinstance(result, ValueError)
+        assert "kebab-case" in str(result)
+
+    def test_invalid_leading_hyphen_construction(self):
+        """Test that leading hyphens are rejected during construction."""
+
+        # Arrange
+        invalid_id = "-topic"
+
+        # Act
+        result = None
+        try:
+            Topic(id=invalid_id)
+        except Exception as e:
+            result = e
+
+        # Assert
+        assert isinstance(result, ValueError)
+        assert "kebab-case" in str(result)
+
+    def test_invalid_trailing_hyphen_construction(self):
+        """Test that trailing hyphens are rejected during construction."""
+
+        # Arrange
+        invalid_id = "topic-"
+
+        # Act
+        result = None
+        try:
+            Topic(id=invalid_id)
+        except Exception as e:
+            result = e
+
+        # Assert
+        assert isinstance(result, ValueError)
+        assert "kebab-case" in str(result)
+
+    def test_invalid_empty_string_construction(self):
+        """Test that empty strings are rejected during construction."""
+
+        # Arrange
+        invalid_id = ""
+
+        # Act
+        result = None
+        try:
+            Topic(id=invalid_id)
+        except Exception as e:
+            result = e
+
+        # Assert
+        assert isinstance(result, ValueError)
+        assert "cannot be empty" in str(result)
+
+    # Invalid identifiers - property update
+    def test_invalid_uppercase_update(self):
+        """Test that uppercase letters are rejected during property update."""
+
+        # Arrange
+        topic = Topic(id="valid-id")
+        invalid_id = "Invalid"
+
+        # Act
+        result = None
+        try:
+            topic.id = invalid_id
+        except Exception as e:
+            result = e
+
+        # Assert
+        assert isinstance(result, ValueError)
+        assert "kebab-case" in str(result)
+
+    def test_invalid_underscore_update(self):
+        """Test that underscores are rejected during property update."""
+
+        # Arrange
+        topic = Topic(id="valid-id")
+        invalid_id = "invalid_id"
+
+        # Act
+        result = None
+        try:
+            topic.id = invalid_id
+        except Exception as e:
+            result = e
+
+        # Assert
+        assert isinstance(result, ValueError)
+        assert "kebab-case" in str(result)

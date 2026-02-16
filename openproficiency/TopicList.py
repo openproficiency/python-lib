@@ -5,6 +5,7 @@ import re
 from datetime import datetime, timezone
 from typing import Dict, Any, Union, List, cast
 from .Topic import Topic
+from .validators import validate_kebab_case, validate_hostname
 
 
 class TopicList:
@@ -61,6 +62,28 @@ class TopicList:
         return self.topics.get(topic_id, None)
 
     # Properties
+    @property
+    def owner(self) -> str:
+        """Get the owner name."""
+        return self._owner
+
+    @owner.setter
+    def owner(self, value: str) -> None:
+        """Set the owner with hostname validation. Format: hostname, Ex: `example.com`"""
+        validate_hostname(value)
+        self._owner = value
+
+    @property
+    def name(self) -> str:
+        """Get the TopicList name. Format: kebab-case"""
+        return self._name
+
+    @name.setter
+    def name(self, value: str) -> None:
+        """Set the TopicList name with kebab-case validation."""
+        validate_kebab_case(value)
+        self._name = value
+
     @property
     def version(self) -> Union[str, None]:
         """Get the semantic version of the TopicList."""

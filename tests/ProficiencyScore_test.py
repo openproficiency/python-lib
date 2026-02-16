@@ -94,6 +94,22 @@ class TestProficiencyScore:
         assert "ProficiencyScoreName" in str(result)
 
     # Properties
+    def test_topic_id(self):
+        """Update the topic id and read it back."""
+
+        # Arrange
+        ps = ProficiencyScore(
+            topic_id="git-commit",
+            score=0.1,
+        )
+        updated_topic_id = "git-merge"
+
+        # Act
+        ps.topic_id = updated_topic_id
+
+        # Assert
+        assert ps.topic_id == updated_topic_id
+
     def test_score_numeric(self):
         """Test setting score with numeric value."""
 
