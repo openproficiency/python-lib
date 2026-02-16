@@ -220,6 +220,24 @@ class TestTopicList:
         # Assert
         assert full_name == "example.com/example-topic-list"
 
+    def test_full_name_with_version(self):
+        """Test getting the full name of the topic list, including version."""
+
+        # Arrange
+        owner = "example.com"
+        name = "example-topic-list"
+        topic_list = TopicList(
+            owner=owner,
+            name=name,
+            version="1.2.3",
+        )
+
+        # Act
+        full_name = topic_list.full_name
+
+        # Assert
+        assert full_name == "example.com/example-topic-list@1.2.3"
+
     def test_version_setter_valid_format(self):
         """Test setting version with valid semantic versioning."""
 
