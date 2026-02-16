@@ -75,6 +75,24 @@ class TestTopic:
         # Assert
         assert subtopic.id in topic.subtopics
 
+    def test_add_subtopic_invalid_type(self):
+        """Test that adding a subtopic with invalid type raises ValueError."""
+
+        # Arrange
+        topic = Topic(id="git")
+
+        # Act
+        result = None
+        try:
+            topic.add_subtopic(123)
+        except Exception as e:
+            result = e
+
+        # Assert
+        assert isinstance(result, ValueError)
+        assert "string" in str(result)
+        assert "dictionary" in str(result)
+
     def test_add_subtopics_mixed(self):
         """Test adding multiple subtopics as a mix of strings and Topic instances."""
 
@@ -119,6 +137,24 @@ class TestTopic:
 
         # Assert
         assert pretopic.id in topic.pretopics
+
+    def test_add_pretopic_invalid_type(self):
+        """Test that adding a pretopic with invalid type raises ValueError."""
+
+        # Arrange
+        topic = Topic(id="git")
+
+        # Act
+        result = None
+        try:
+            topic.add_pretopic(123)
+        except Exception as e:
+            result = e
+
+        # Assert
+        assert isinstance(result, ValueError)
+        assert "string" in str(result)
+        assert "dictionary" in str(result)
 
     def test_add_pretopics_mixed(self):
         """Test adding multiple pretopics as a mix of strings and Topic instances."""
