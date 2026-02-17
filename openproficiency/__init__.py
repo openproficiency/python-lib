@@ -5,3 +5,4 @@ from .TopicList import TopicList
 from .ProficiencyScore import ProficiencyScore, ProficiencyScoreName
 from .TranscriptEntry import TranscriptEntry
 from .ProficiencyLevel import ProficiencyLevel
+from .ProficiencyLevelList import ProficiencyLevelList
