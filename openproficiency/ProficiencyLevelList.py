@@ -3,7 +3,7 @@
 import json
 import re
 from datetime import datetime, timezone
-from typing import Optional, Dict, Any, Union, List
+from typing import Optional, Dict, Any, Union, List, cast
 from .ProficiencyLevel import ProficiencyLevel
 from .TopicList import TopicList
 from .validators import validate_kebab_case, validate_hostname
@@ -99,7 +99,7 @@ class ProficiencyLevelList:
         return full_name
 
     # Methods
-    def add_level(self, level: ProficiencyLevel) -> None:
+    def add_level(self, level: ProficiencyLevel, validate: bool = True) -> None:
         """
         Add a proficiency level to this list.
         Validates that all pretopics reference valid topics in dependencies.
@@ -109,7 +109,8 @@ class ProficiencyLevelList:
             raise ValueError(f"A proficiency level with ID '{level.id}' already exists in this list")
 
         # Validate pretopics
-        self._validate_pretopics(level)
+        if validate:
+            self._validate_pretopics(level)
 
         # Add the level
         self.levels[level.id] = level
@@ -201,6 +202,70 @@ class ProficiencyLevelList:
         """Convert ProficiencyLevelList to JSON string."""
         return json.dumps(self.to_dict())
 
+    # Methods - Class
+    @staticmethod
+    def from_dict(data: Dict[str, Any]) -> "ProficiencyLevelList":
+        """
+        Create a ProficiencyLevelList from a dictionary.
+        Optionally provide TopicList objects for dependencies.
+        """
+        # Create empty ProficiencyLevelList
+        level_list = ProficiencyLevelList(
+            owner=data["owner"],
+            name=data["name"],
+            description=data.get("description", None),
+            version=data["version"],
+            timestamp=data["timestamp"],
+            certificate=data["certificate"],
+        )
+
+        # Add dependencies if provided
+        dependencies = cast(Dict[str, str], data.get("dependencies", {}))
+        for namespace, topic_list_full_name in dependencies.items():
+            # Extract from full name like 'example.com/math-topics@1.0.0'
+            owner = topic_list_full_name.split("/")[0]
+            name = topic_list_full_name.split("/")[1].split("@")[0]
+            version = topic_list_full_name.split("@")[1]
+            # Load topic list
+            # TODO: In the future this should use the url to retrieve the list
+            # and get metadata from the list's json.
+            topic_list = TopicList(
+                owner=owner,
+                name=name,
+                version=version,
+            )
+            # Assign to namespace
+            level_list.dependencies[namespace] = topic_list
+
+        # Add each level
+        levels = cast(Dict[str, Any], data.get("proficiency-levels", {}))
+        for level_id, level_data in levels.items():
+            if isinstance(level_data, dict):
+                level_dict = cast(Dict[str, Any], level_data)
+                level = ProficiencyLevel(
+                    id=level_id,
+                    description=level_dict.get("description"),
+                    pretopics=set(level_dict.get("pretopics", [])),
+                )
+                level_list.add_level(level, validate=False)
+
+        return level_list
+
+    @staticmethod
+    def from_json(json_data: str) -> "ProficiencyLevelList":
+        """
+        Load a ProficiencyLevelList from JSON string.
+        Optionally provide TopicList objects for dependencies.
+        """
+        # Verify input is json string
+        try:
+            data = json.loads(json_data)
+        except TypeError:
+            raise TypeError("Unable to import. 'json_data' must be a JSON string")
+        except Exception as e:
+            raise e
+
+        return ProficiencyLevelList.from_dict(data)
 
     # Debugging
     def __repr__(self) -> str:

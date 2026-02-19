@@ -703,6 +703,272 @@ class TestProficiencyLevelList:
         assert data["name"] == "levels"
         assert "beginner" in data["proficiency-levels"]
 
+    # Methods - from_dict
+    def test_from_dict_simple(self):
+        """Test creating from dictionary with minimal details."""
+
+        # Arrange
+        data: Dict[str, Any] = {
+            "owner": "example.com",
+            "name": "levels",
+            "description": "Test levels",
+            "version": "1.0.0",
+            "timestamp": "2025-01-15T10:30:00+00:00",
+            "certificate": "--- cert ---",
+        }
+
+        # Act
+        level_list = ProficiencyLevelList.from_dict(data)
+
+        # Assert
+        assert level_list.owner == "example.com"
+        assert level_list.name == "levels"
+        assert level_list.description == "Test levels"
+        assert level_list.version == "1.0.0"
+        assert level_list.timestamp.isoformat() == "2025-01-15T10:30:00+00:00"
+        assert level_list.certificate == "--- cert ---"
+
+    def test_from_dict_levels_dependencies(self):
+        """Test creating from dictionary with levels and dependencies."""
+
+        # Arrange
+        data: Dict[str, Any] = {
+            "owner": "example.com",
+            "name": "levels",
+            "version": "1.0.0",
+            "timestamp": "2025-01-15T10:30:00+00:00",
+            "certificate": "cert",
+            "proficiency-levels": {
+                "beginner": {
+                    "description": "Beginner level",
+                    "pretopics": [],
+                },
+                "advanced": {
+                    "description": "Advanced level",
+                    "pretopics": [],
+                },
+            },
+            "dependencies": {
+                "math": "example.com/math-topics@1.0.0",
+            },
+        }
+
+        # Act
+        level_list = ProficiencyLevelList.from_dict(data)
+
+        # Assert
+        assert len(level_list.levels) == 2
+        assert "beginner" in level_list.levels
+        assert "advanced" in level_list.levels
+        assert level_list.levels["beginner"].description == "Beginner level"
+
+        assert "math" in level_list.dependencies
+        assert level_list.dependencies["math"].owner == "example.com"
+        assert level_list.dependencies["math"].name == "math-topics"
+        assert level_list.dependencies["math"].version == "1.0.0"
+
+    # Methods - from_json
+    def test_from_json_basic(self):
+        """Test creating from JSON string."""
+
+        # Arrange
+        json_str = json.dumps(
+            {
+                "owner": "example.com",
+                "name": "levels",
+                "description": "Test levels",
+                "version": "1.0.0",
+                "timestamp": "2025-01-15T10:30:00+00:00",
+                "certificate": "--- cert ---",
+            }
+        )
+
+        # Act
+        level_list = ProficiencyLevelList.from_json(json_str)
+
+        # Assert
+        assert level_list.owner == "example.com"
+        assert level_list.name == "levels"
+        assert level_list.description == "Test levels"
+        assert level_list.version == "1.0.0"
+        assert level_list.timestamp.isoformat() == "2025-01-15T10:30:00+00:00"
+        assert level_list.certificate == "--- cert ---"
+
+    def test_from_json_with_levels(self):
+        """Test creating from JSON string with levels and dependencies."""
+
+        # Arrange
+        json_str = json.dumps(
+            {
+                "owner": "example.com",
+                "name": "levels",
+                "version": "1.0.0",
+                "timestamp": "2025-01-15T10:30:00+00:00",
+                "certificate": "cert",
+                "proficiency-levels": {
+                    "beginner": {
+                        "description": "Beginner level",
+                        "pretopics": [],
+                    },
+                    "advanced": {
+                        "description": "Advanced level",
+                        "pretopics": [],
+                    },
+                },
+                "dependencies": {
+                    "math": "example.com/math-topics@1.0.0",
+                },
+            }
+        )
+
+        # Act
+        level_list = ProficiencyLevelList.from_json(json_str)
+
+        # Assert
+        assert len(level_list.levels) == 2
+        assert "beginner" in level_list.levels
+        assert "advanced" in level_list.levels
+        assert level_list.levels["beginner"].description == "Beginner level"
+
+        assert "math" in level_list.dependencies
+        assert level_list.dependencies["math"].owner == "example.com"
+        assert level_list.dependencies["math"].name == "math-topics"
+        assert level_list.dependencies["math"].version == "1.0.0"
+
+    def test_from_json_invalid_input(self):
+        """Test that non-JSON input raises error."""
+
+        # Arrange
+        json_str = "not a json string"
+
+        # Act
+        result = None
+        try:
+            ProficiencyLevelList.from_json(json_data=json_str)
+        except Exception as e:
+            result = e
+
+        # Assert
+        assert isinstance(result, json.JSONDecodeError)
+
+    # Methods - Round trip (to_dict -> from_dict)
+    def test_round_trip_to_dict_from_dict(self):
+        """Test converting to dict and back preserves data."""
+
+        # Arrange
+        topic_list = TopicList(
+            owner="example.com",
+            name="math-topics",
+            version="1.0.0",
+            timestamp="2025-01-15T10:30:00+00:00",
+            certificate="cert",
+        )
+        topic_list.add_topic(Topic(id="addition"))
+        topic_list.add_topic(Topic(id="subtraction"))
+
+        level_list = ProficiencyLevelList(
+            owner="example.com",
+            name="levels",
+            description="Math proficiency levels",
+            version="1.0.0",
+            timestamp="2025-01-15T10:30:00+00:00",
+            certificate="https://example.com/cert.pem",
+            levels={
+                "beginner": ProficiencyLevel(
+                    id="beginner",
+                    description="Beginner level",
+                    pretopics={
+                        "math.addition",
+                    },
+                ),
+                "intermediate": ProficiencyLevel(
+                    id="intermediate",
+                    description="Intermediate level",
+                    pretopics={
+                        "math.subtraction",
+                    },
+                ),
+            },
+            dependencies={
+                "math": topic_list,
+            },
+        )
+
+        # Act
+        data = level_list.to_dict()
+        result = ProficiencyLevelList.from_dict(data)
+
+        # Assert
+        assert result.owner == level_list.owner
+        assert result.name == level_list.name
+        assert result.description == level_list.description
+        assert result.version == level_list.version
+        assert result.timestamp == level_list.timestamp
+        assert result.certificate == level_list.certificate
+
+        assert len(result.dependencies) == 1
+        assert "math" in result.dependencies
+        assert result.dependencies["math"].full_name == topic_list.full_name
+
+        assert len(result.levels) == 2
+        assert result.levels["beginner"].description == "Beginner level"
+        assert "math.addition" in result.levels["beginner"].pretopics
+        assert result.levels["intermediate"].description == "Intermediate level"
+        assert "math.subtraction" in result.levels["intermediate"].pretopics
+
+    def test_round_trip_to_json_from_json(self):
+        """Test converting to JSON and back preserves data."""
+
+        # Arrange
+        topic_list = TopicList(
+            owner="example.com",
+            name="math-topics",
+            version="1.0.0",
+            timestamp="2025-01-15T10:30:00+00:00",
+            certificate="cert",
+        )
+        topic_list.add_topic(Topic(id="addition"))
+        topic_list.add_topic(Topic(id="subtraction"))
+
+        level_list = ProficiencyLevelList(
+            owner="example.com",
+            name="levels",
+            description="Math proficiency levels",
+            version="1.0.0",
+            timestamp="2025-01-15T10:30:00+00:00",
+            certificate="https://example.com/cert.pem",
+            dependencies={
+                "math": topic_list,
+            },
+        )
+        level_list.add_level(
+            ProficiencyLevel(
+                id="beginner",
+                description="Beginner level",
+                pretopics={
+                    "math.addition",
+                },
+            )
+        )
+        level_list.add_level(
+            ProficiencyLevel(
+                id="intermediate",
+                description="Intermediate level",
+                pretopics={
+                    "math.subtraction",
+                },
+            )
+        )
+
+        # Act
+        json_str = level_list.to_json()
+        result = ProficiencyLevelList.from_json(json_str)
+        round_trip_json = result.to_json()
+
+        # Assert
+        data = json.loads(json_str)
+        round_trip_data = json.loads(round_trip_json)
+        assert round_trip_data == data
 
     # Debugging
     def test_repr(self):
